@@ -5,17 +5,39 @@
  */
 package chatserver;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author lucas
  */
 public class ChatServer {
 
-    /**
-     * @param args the command line arguments
-     */
+    static ServerSocket serverSocket = null;
+    static Socket clientSocket = null;
+    static ClientThread[] threads = new clientThread[18];
     public static void main(String[] args) {
-        // TODO code application logic here
+     try {
+            serverSocket=new ServerSocket(5000);
+        } catch (IOException ex) {
+            Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while(true)
+            try{
+                clientSocket=serverSocket.accept();
+                for (int i = 0; i < 18; i++) {
+                    if(threads[i]==null){
+                        (threads[i]=new ClientThread(clientSocket, threads)).start();
+                        break;
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
     
 }
