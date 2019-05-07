@@ -19,8 +19,10 @@ public class ChatServer {
 
     static ServerSocket serverSocket = null;
     static Socket clientSocket = null;
-    static ClientThread[] threads = new clientThread[18];
+    static ClientThread[] threads = new ClientThread[18];
+    
     public static void main(String[] args) {
+        BaseDeDatos BD = new BaseDeDatos();
      try {
             serverSocket=new ServerSocket(5000);
         } catch (IOException ex) {
@@ -31,7 +33,7 @@ public class ChatServer {
                 clientSocket=serverSocket.accept();
                 for (int i = 0; i < 18; i++) {
                     if(threads[i]==null){
-                        (threads[i]=new ClientThread(clientSocket, threads)).start();
+                        (threads[i]=new ClientThread(clientSocket, BD, threads)).start();
                         break;
                     }
                 }

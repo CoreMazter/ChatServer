@@ -29,11 +29,7 @@ public class BaseDeDatos
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/cocochat", "root", ""); 
         } 
-        catch (ClassNotFoundException ex) 
-        {
-            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (SQLException ex) 
+        catch (ClassNotFoundException | SQLException ex) 
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }

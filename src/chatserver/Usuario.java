@@ -44,7 +44,11 @@ public class Usuario
     private String nickname;
     private String password;
     
-    public Usuario(){}
+    public Usuario(){
+        this.id=0;
+        this.nickname="";
+        this.password="";
+    }
     
     public Usuario(int id, String nickname, String password)
     {
