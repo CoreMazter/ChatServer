@@ -42,7 +42,7 @@ public class Usuario
         this.password = password;
     }
     private String nickname;
-    private String password;
+    public String password;
     
     public Usuario(){
         this.id=0;

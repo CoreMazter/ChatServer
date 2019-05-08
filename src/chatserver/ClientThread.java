@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,6 +26,8 @@ public class ClientThread extends Thread {
     private int maxClientsCount;
     private BaseDeDatos BD;
 
+    String inputs;
+    String[] input;
     public ClientThread(Socket clientSocket, BaseDeDatos BD, ClientThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
@@ -33,13 +37,21 @@ public class ClientThread extends Thread {
     
     @Override
     public void run(){
+        
+        user = new Usuario();
         try{
-            user = new Usuario();
             is= new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
-            String[] input;
+            byte[] bytes=new byte[50];
+                    
             while(user.getId()==0){
-                input = is.readLine().split(" ");
+                System.out.println("asdjaosfjoia");
+                while(clientSocket.getInputStream().available()==0);
+                clientSocket.getInputStream().read(bytes);
+                inputs= new String(bytes);
+                System.out.println("flñkasdmflksamdlkfm");
+                System.out.println(" asdasd    ");
+                input=inputs.split(" ");
                 user.setNickname(input[1]);
                 user.setPassword(input[2]);
                 switch(input[0]){
@@ -47,10 +59,11 @@ public class ClientThread extends Thread {
                         BD.insertUser(user.getNickname(), user.getPassword());
                     case "login":
                         user=BD.selectUser(user.getNickname());
-                        if(!user.getPassword().equals(input[2])){
+                        System.out.println("*"+user.password+"*");
+                        if(!user.password.equals(input[2])){
                             user.setId(0);
-                            os.print(false);
-                        }else os.print(true);
+                            os.print('0');
+                        }else os.print('1');
                         break;
                 }
                 
@@ -58,10 +71,11 @@ public class ClientThread extends Thread {
             while(true){
                 
             }
+        }catch(IOException ex){
+        Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(IOException ex){
-            
-        }
+                
+ 
     }
    
 }   

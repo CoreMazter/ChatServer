@@ -47,7 +47,7 @@ public class BaseDeDatos
             {
                 usuario.setId(rs.getInt("id_u"));
                 usuario.setNickname(rs.getString("nickname"));
-                usuario.setPassword(rs.getString("password"));
+                usuario.setPassword(rs.getString("password").replaceAll("[^\\x20-\\x7e]", "").replaceAll("\\p{C}", ""));
             }
             return usuario;
         } 
