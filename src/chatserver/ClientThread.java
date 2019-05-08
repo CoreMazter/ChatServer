@@ -42,11 +42,13 @@ public class ClientThread extends Thread {
         try{
             is= new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
-            byte[] bytes=new byte[50];
+            byte[] bytes;
                     
             while(user.getId()==0){
                 System.out.println("asdjaosfjoia");
                 while(clientSocket.getInputStream().available()==0);
+                bytes=new byte[clientSocket.getInputStream().available()];
+                
                 clientSocket.getInputStream().read(bytes);
                 inputs= new String(bytes);
                 System.out.println("flñkasdmflksamdlkfm");
@@ -54,13 +56,15 @@ public class ClientThread extends Thread {
                 input=inputs.split(" ");
                 user.setNickname(input[1]);
                 user.setPassword(input[2]);
+                input[2]=input[2];
                 switch(input[0]){
                     case "signIn":
                         BD.insertUser(user.getNickname(), user.getPassword());
                     case "login":
                         user=BD.selectUser(user.getNickname());
-                        System.out.println("*"+user.password+"*");
-                        if(!user.password.equals(input[2])){
+                        System.out.println("*"+user.password.length()+"*");
+                        System.out.println("*"+input[2].length()+"*");
+                        if(!input[2].equals(user.password)){
                             user.setId(0);
                             os.print('0');
                         }else os.print('1');
