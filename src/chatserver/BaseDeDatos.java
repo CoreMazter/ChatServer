@@ -101,10 +101,31 @@ public class BaseDeDatos
     Amigos     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     
-    public Amigos selectAmigos() {
+    public Amigos selectAmigos(int id_u1, int id_u2) {
         Amigos amigos = new Amigos();
+        ResultSet rs;
+
+        try {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM amigos "
+                                                        + "WHERE id_u1 = " + id_u1 + "AND id_u2 = " + id_u2
+                                                        + "OR id_u1 = " + id_u2 + "AND id_u2 = " + id_u1);
+            rs = statement.executeQuery();
+            while(rs.next()) {
+                amigos.setId(rs.getInt("id_a"));
+                amigos.setEstado(rs.getString("estado"));
+                amigos.setAlias1(rs.getString("alias1"));
+                amigos.setAlias2(rs.getString("alias2"));
+                amigos.setId_u1(rs.getInt("id_u1"));
+                amigos.setId_u2(rs.getInt("id_u2"));
+            }
+            return amigos;
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        return amigos;
+        return null;
     }
     
     public ArrayList<Amigos> selectAllAmigos(int id_u1) {
@@ -150,10 +171,10 @@ public class BaseDeDatos
         return 0;
     }
     
-    public int updateAmigos(int id) {
+    public int updateAmigos(int id_a) {
         try {
             PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' "
-                                                        + "WHERE id = " + id);
+                                                        + "WHERE id = " + id_a);
             
             return stmt.executeUpdate();
         } catch (SQLException ex) {
