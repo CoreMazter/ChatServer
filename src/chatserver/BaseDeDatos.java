@@ -108,7 +108,7 @@ public class BaseDeDatos
         try {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM amigos "
                                                         + "WHERE id_u1 = " + id_u1 + "AND id_u2 = " + id_u2
-                                                        + "OR id_u1 = " + id_u2 "AND id_u2 = " id_u1);    
+                                                        + "OR id_u1 = " + id_u2 + "AND id_u2 = " + id_u1);
             rs = statement.executeQuery();
             while(rs.next()) {
                 amigos.setId(rs.getInt("id_a"));
@@ -118,7 +118,7 @@ public class BaseDeDatos
                 amigos.setId_u1(rs.getInt("id_u1"));
                 amigos.setId_u2(rs.getInt("id_u2"));
             }
-            return usuario;
+            return amigos;
         } 
         catch (SQLException ex) 
         {
