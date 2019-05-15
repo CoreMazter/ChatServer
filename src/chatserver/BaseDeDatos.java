@@ -96,4 +96,79 @@ public class BaseDeDatos
         }
         return 0;
     }
+    
+    /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Amigos     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    
+    public Amigos selectAmigos() {
+        Amigos amigos = new Amigos();
+        
+        return amigos;
+    }
+    
+    public ArrayList<Amigos> selectAllAmigos(int id_u1) {
+        ResultSet rs;
+        Amigos amigos = new Amigos();
+        ArrayList<Amigos> result = new ArrayList();
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
+                                                        + "WHERE id_u1 = " + id_u1 
+                                                        + "OR id_u2 = " + id_u1);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                amigos.setId(rs.getInt("id_a"));
+                amigos.setEstado(rs.getString("estado"));
+                amigos.setAlias1(rs.getString("alias1"));
+                amigos.setAlias2(rs.getString("alias2"));
+                amigos.setId_u1(rs.getInt("id_u1"));
+                amigos.setId_u2(rs.getInt("id_u2"));
+                result.add(amigos);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public int insertAmigos(String alias1, String alias2, int id_u1, int id_u2) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO amigos"
+                                                        + "(estado, alias1, alias2, id_u1, id_u2)"
+                                                        + "VALUES('Pendiente', ?, ?, ?, ?)");
+            stmt.setInt(1, id_u1);
+            stmt.setInt(2, id_u2);
+            stmt.setString(3, alias1);
+            stmt.setString(4, alias2);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    public int updateAmigos(int id) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' "
+                                                        + "WHERE id = " + id);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    public int deleteAmigos() {
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("");
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 }
