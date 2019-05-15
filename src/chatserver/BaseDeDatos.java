@@ -162,10 +162,13 @@ public class BaseDeDatos
         return 0;
     }
     
-    public int deleteAmigos() {
-        
+    public int deleteAmigos(int id_u1, int id_u2) {
         try {
-            PreparedStatement stmt = con.prepareStatement("");
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM amigos WHERE "
+                                                        + "id_u1 = " + id_u1 + "AND id_u2 =" + id_u2 
+                                                        + "OR id_u1 = " + id_u2 + "AND id_u2 =" + id_u1);
+            
+            return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
