@@ -108,7 +108,23 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
-                    
+                    case "groups":{
+                        ArrayList<Grupo> grupos=BD.selectAllGrupoAceptado(user.getId());
+                        os.print("<grupos>");
+                        grupos.forEach((grupo)->{
+                            os.print("<grupo>");
+                            os.print("<id>");
+                            os.print(grupo.id_g+"");
+                            os.print("</id>");
+                            os.print("<nombre>");
+                            os.print(grupo.nombre);
+                            os.print("</nombre>");
+                            os.print("</grupo>");
+                        });
+                        os.print("</grupos>");                        
+                        initSteps++;
+                        break;
+                    }
                     default:
                         break;
                 }
