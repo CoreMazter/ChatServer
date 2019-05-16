@@ -37,17 +37,17 @@ public class ClientThread extends Thread {
             Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void run(){
         init();
         while (true){
-            
+
         }
-                
- 
+
+
     }
-    
+
     void init(){
         user = new Usuario();
         byte[] bytes;
@@ -64,20 +64,12 @@ public class ClientThread extends Thread {
                 user.setPassword(splitted[2]);
                 switch(splitted[0]){
                     case "signIn":
-                        if(user.getNickname().equals(BD.selectUser(user.getNickname()).getNickname()))
-                        {
-                            os.print('0');
-                            break;
-                        }
                         user.setId(BD.insertUser(user.getNickname(), user.getPassword()));
-                        BD.insertMensajeAmigos(1, 1, "AAAAAAAAAAAA");
-                        BD.insertMensajeAmigos(1, 1, "EEEE");
-                        BD.insertMensajeAmigos(2, 2, "IIIIIIIIIIIIIII");
-                        BD.insertMensajeAmigos(4, 2, "OOOOOOOOOOOOO");
-                        BD.insertMensajeAmigos(1, 1, "UUUUUUUUUUUUUU");
-                        ArrayList<MensajesAmigos> mensajes = new ArrayList();
-                        mensajes = BD.selectAllMensajesAmigos(2);
-                        mensajes.forEach(mensaje -> System.out.println(mensaje.getMensaje()));
+                        if(user.getId()!=0)
+                            os.print('1');
+                        else
+                            os.print('0');
+                        break;
                     case "login":
                         user=BD.selectUser(user.getNickname());
                         if(!splitted[2].equals(user.password)){
@@ -88,7 +80,7 @@ public class ClientThread extends Thread {
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+            }
         }
         int initSteps=0;
         while(initSteps<4){
@@ -112,17 +104,18 @@ public class ClientThread extends Thread {
                             os.print("</alias>");
                             os.print("</amigo>");
                         });
-                        os.print("</amigos>");                        
+                        os.print("</amigos>");
                         initSteps++;
                         break;
                     }
+
                     default:
                         break;
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
-            }        
+            }
         }
     }
-   
-}   
+
+}
