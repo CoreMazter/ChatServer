@@ -295,6 +295,7 @@ public class Chat extends JFrame implements ActionListener, Runnable{
     }
 
     public void groupsList(){
+        
             byte[] bytes;
             String command="";
             String[] splitted;
