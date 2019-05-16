@@ -64,20 +64,12 @@ public class ClientThread extends Thread {
                 user.setPassword(splitted[2]);
                 switch(splitted[0]){
                     case "signIn":
-                        if(user.getNickname().equals(BD.selectUser(user.getNickname()).getNickname()))
-                        {
+                        user.setId(BD.insertUser(user.getNickname(), user.getPassword()));
+                        if(user.getId()!=0)
+                            os.print('1');
+                        else
                             os.print('0');
-                            break;
-                        }
-                        user.setId(BD.insertUser(user.getNickname(), user.getPassword())); 
-                        BD.insertMensajeGrupo(user.getId(), 1, "AAAAAAAAAAAA");
-                        BD.insertMensajeGrupo(3, 1, "EEEE");
-                        BD.insertMensajeGrupo(5, 1, "IIIIIIIIIIIIIII");
-                        BD.insertMensajeGrupo(6, 1, "OOOOOOOOOOOOO");
-                        BD.insertMensajeGrupo(user.getId(), 1, "UUUUUUUUUUUUUU");
-                        ArrayList<MensajesGrupo> mensajes = new ArrayList();
-                        mensajes = BD.selectAllMensajesGrupo(1);
-                        mensajes.forEach(mensaje -> System.out.println(mensaje.getId_mg()));
+                        break;
                     case "login":
                         user=BD.selectUser(user.getNickname());
                         if(!splitted[2].equals(user.password)){
@@ -116,6 +108,7 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
+                    
                     default:
                         break;
                 }
