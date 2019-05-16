@@ -544,7 +544,10 @@ public class BaseDeDatos
             stmt = con.prepareStatement("SELECT id_g FROM grupo");
             rs = stmt.executeQuery();
             while(rs.next()) {
-                id_g = rs.getInt("id_g");
+                if(rs.getInt("id_g")>id_g)
+                {
+                    id_g = rs.getInt("id_g");
+                }
             }
             return id_g;
             
