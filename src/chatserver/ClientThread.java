@@ -140,7 +140,8 @@ public class ClientThread extends Thread {
                             mensajes.forEach((mensaje)->{
                                 os.print("<mensaje>");
                                 os.print("<origen>");
-                                os.print(""+(mensaje.getUsuario()==user.getId()?0:mensaje.getUsuario()));
+                                os.print((mensaje.getUsuario()==user.getId()?"0":BD.selectUserById(mensaje.getUsuario())));
+                                
                                 os.print("</origen>");
                                 os.print("<texto>");
                                 os.print(mensaje.getMensaje());
