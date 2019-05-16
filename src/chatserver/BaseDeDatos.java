@@ -604,7 +604,6 @@ public class BaseDeDatos
                                                         + "JOIN pertenece WHERE usuario = " + usuario
                                                         + " AND estado = 'Aceptado'");
 
-
             rs = stmt.executeQuery();
             while(rs.next()){
                 grupo.setId_g(rs.getInt("id_g"));
