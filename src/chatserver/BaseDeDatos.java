@@ -287,10 +287,22 @@ public class BaseDeDatos
         return 0;
     }
     
-    public int updateAmigos(int id_a) {
+    public int updateAmigos(int id_a, String alias) {
+        String aliasActual = "";
+        ResultSet rs;
+        
         try {
-            PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' "
-                                                        + "WHERE id = " + id_a);
+            PreparedStatement stmt = con.prepareStatement("SELECT alias1 from amigos WHERE id_a = " + id_a);
+            rs = stmt.executeQuery();
+            
+            while(rs.next()) {
+                aliasActual = rs.getString("alias1");
+            }
+            
+            if (aliasActual.equals(alias))
+                stmt = con.prepareStatement("UPDATE amigos SET alias1 = " + alias + "WHERE id_a = " + id_a);
+            else
+                stmt = con.prepareStatement("UPDATE amigos SET alias2 = " + alias + "WHERE id_a = " + id_a);
             
             return stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -319,12 +331,20 @@ public class BaseDeDatos
     public int insertGrupo(String nombre){
          Grupo grupo = new Grupo();
          ResultSet rs;
+         int id_g = 0;
          
         try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO grupo (nombre) VALUES (?)");
             stmt.setString(1, nombre);
+            stmt.executeUpdate();
             
-            return stmt.executeUpdate();
+            stmt = con.prepareStatement("SELECT id_g FROM grupo");
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                id_g = rs.getInt("id_g");
+            }
+            return id_g;
+            
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
