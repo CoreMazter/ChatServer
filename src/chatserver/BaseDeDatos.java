@@ -22,32 +22,32 @@ public class BaseDeDatos
     private Connection con;
     public BaseDeDatos()
     {
-        try 
+        try
         {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/cocochat", "root", ""); 
-        } 
-        catch (ClassNotFoundException | SQLException ex) 
+            con = DriverManager.getConnection("jdbc:mysql://localhost/cocochat", "root", "");
+        }
+        catch (ClassNotFoundException | SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
+
     ///USUARIO///
-    
+
     /**
      * Selecciona un usuario basado en su nickname y regresa todos los datos en un POJO
      * @param nick
-     * @return 
+     * @return
      */
     public Usuario selectUser(String nick)
     {
         ResultSet rs;
         Usuario usuario = new Usuario(0, "", "");
-        try 
+        try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE nickname='"+nick+"'");    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE nickname='"+nick+"'");
             rs = statement.executeQuery();
             while(rs.next())
             {
@@ -56,8 +56,8 @@ public class BaseDeDatos
                 usuario.setPassword(rs.getString("password").replaceAll("[^\\x20-\\x7e]", "").replaceAll("\\p{C}", ""));
             }
             return usuario;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,34 +66,34 @@ public class BaseDeDatos
     public String selectUserById(int id)
     {
         ResultSet rs;
-        try 
+        try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id+"'");    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id+"'");
             rs = statement.executeQuery();
             while(rs.next())
             {
                  return(rs.getString("nickname"));
             }
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
     }
 
-    
+
     /**
      * Selecciona todos los usuarios de la BD
-     * @return 
+     * @return
      */
     public ArrayList<Usuario> selectAllUsers()
     {
         ResultSet rs;
         ArrayList<Usuario> res = new ArrayList();
-        try 
+        try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario");    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario");
             rs = statement.executeQuery();
             while(rs.next())
             {
@@ -104,26 +104,26 @@ public class BaseDeDatos
                 res.add(usuario);
             }
             return res;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
+
 
     /**
      * Crea un nuevo usuario y regresa su ID
      * @param nick
      * @param pass
-     * @return 
+     * @return
      */
     public int insertUser (String nick, String pass)
     {
         ResultSet rs;
         int id_u = 0;
-        try 
+        try
         {
             PreparedStatement statement = con.prepareStatement("INSERT INTO usuario(nickname, password) VALUES ('"+nick+"', '"+pass+"')");
             if(statement.executeUpdate() == 0)
@@ -143,28 +143,28 @@ public class BaseDeDatos
                 }
                 return id_u;
             }
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
+
     ///PERTENENCIAS///
-    
+
     /**
      * Selecciona todos los grupos a los que pertenece un usuario
      * @param id_u
-     * @return 
+     * @return
      */
     public ArrayList<Pertenencia> selectAllPertenenciasFromUsuario(int id_u)
     {
         ResultSet rs;
         ArrayList<Pertenencia> res = new ArrayList();
-        try 
+        try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE usuario = "+id_u);    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE usuario = "+id_u);
             rs = statement.executeQuery();
             while(rs.next())
             {
@@ -176,26 +176,26 @@ public class BaseDeDatos
                 res.add(pertenencia);
             }
             return res;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
+
     /**
      * Selecciona todos los usuarios que pertenecen a un grupo
      * @param id_g
-     * @return 
+     * @return
      */
     public ArrayList<Pertenencia> selectAllPertenenciasFromGrupo(int id_g)
     {
         ResultSet rs;
         ArrayList<Pertenencia> res = new ArrayList();
-        try 
+        try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE grupo = "+id_g);    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE grupo = "+id_g);
             rs = statement.executeQuery();
             while(rs.next())
             {
@@ -207,25 +207,25 @@ public class BaseDeDatos
                 res.add(pertenencia);
             }
             return res;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
+
     /**
      * Agrega una perteencia de un usuario a un grupo en un estado de Invitación
      * @param usuario
      * @param grupo
-     * @return 
+     * @return
      */
     public int insertPertenencia(int  usuario, int grupo)
     {
         ResultSet rs;
         int id_p = 0;
-        try 
+        try
         {
             PreparedStatement statement = con.prepareStatement("INSERT INTO pertenece(estado, usuario, grupo) VALUES ('Invitado',"+usuario+", "+grupo+")");
             statement.executeUpdate();
@@ -239,62 +239,62 @@ public class BaseDeDatos
                 }
             }
             return id_p;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
+
     /**
      * Modifica el estado del usuario en un grupo de invitado a Aceptado
      * @param id_p
-     * @return 
+     * @return
      */
     public int updatePertenencia(int id_p)
     {
-        try 
+        try
         {
             PreparedStatement statement = con.prepareStatement("UPDATE pertenece SET estado = 'Aceptado' WHERE id_p = "+id_p);
             return statement.executeUpdate();
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-     
-    
+
+
     /**
      * Borra la pertenencia de un usuario a un grupo
      * @param id_p
-     * @return 
+     * @return
      */
     public int deletePertenencia(int id_p)
     {
-        try 
+        try
         {
             PreparedStatement statement = con.prepareStatement("DELETE FROM pertenece WHERE id_p = "+id_p);
             return statement.executeUpdate();
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
+
     /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Amigos     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-    
+
     /**
      * Selecciona la amistad de dos usuarios en específico
      * @param id_u1
      * @param id_u2
-     * @return 
+     * @return
      */
     public Amigos selectAmigos(int id_u1, int id_u2) {
         Amigos amigos = new Amigos();
@@ -314,27 +314,27 @@ public class BaseDeDatos
                 amigos.setId_u2(rs.getInt("id_u2"));
             }
             return amigos;
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
     /**
      * Selecciona todas las amistades de un usuario
      * @param id_u1
-     * @return 
+     * @return
      */
     public ArrayList<Amigos> selectAllAmigos(int id_u1) {
         ResultSet rs;
         ArrayList<Amigos> result = new ArrayList();
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
-                                                        + "WHERE id_u1 = " + id_u1 
+                                                        + "WHERE id_u1 = " + id_u1
                                                         + " OR id_u2 = " + id_u1);
             rs = stmt.executeQuery();
             while(rs.next()) {
@@ -353,14 +353,14 @@ public class BaseDeDatos
         }
         return null;
     }
-    
+
     /**
      * Inserta una nueva relación de amistad
      * @param alias1
      * @param alias2
      * @param id_u1
      * @param id_u2
-     * @return 
+     * @return
      */
     public int insertAmigos(String alias1, String alias2, int id_u1, int id_u2) {
         ResultSet rs;
@@ -373,7 +373,7 @@ public class BaseDeDatos
             stmt.setString(2, alias2);
             stmt.setInt(3, id_u1);
             stmt.setInt(4, id_u2);
-            
+
             if (stmt.executeUpdate() == 0)
             {
                 return 0;
@@ -396,64 +396,64 @@ public class BaseDeDatos
         }
         return 0;
     }
-    
+
 
     /**
      * Actualiza una amistad en específico y la pone como aceptada
      * @param id_a
-     * @return 
+     * @return
      */
     public int updateAmigos(int id_a, String alias) {
         String aliasActual = "";
         ResultSet rs;
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT alias1 from amigos WHERE id_a = " + id_a);
             rs = stmt.executeQuery();
-            
+
             while(rs.next()) {
                 aliasActual = rs.getString("alias1");
             }
-            
+
             if (aliasActual.equals(alias))
                 stmt = con.prepareStatement("UPDATE amigos SET alias1 = " + alias + "WHERE id_a = " + id_a);
             else
                 stmt = con.prepareStatement("UPDATE amigos SET alias2 = " + alias + "WHERE id_a = " + id_a);
-            
+
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
+
     /**
      * Borra una amistad en específico
      * @param id_u1
      * @param id_u2
-     * @return 
+     * @return
      */
     public int deleteAmigos(int id_u1, int id_u2) {
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE FROM amigos WHERE "
-                                                        + "id_u1 = " + id_u1 + "AND id_u2 =" + id_u2 
+                                                        + "id_u1 = " + id_u1 + "AND id_u2 =" + id_u2
                                                         + "OR id_u1 = " + id_u2 + "AND id_u2 =" + id_u1);
-            
+
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
-    
+
+
     ///MENSAJES GRUPO///
-    
+
     /**
      * Crea un nuevo mensaje en un grupo de un usuario en específico
      * @param id_u
      * @param id_g
-     * @return 
+     * @return
      */
     public int insertMensajeGrupo(int id_u, int id_g, String mensaje)
     {
@@ -465,17 +465,17 @@ public class BaseDeDatos
         }
         return 0;
     }
-    
+
     /**
      * Selecciona todos los mensajes de un grupo
      * @param id_g
-     * @return 
+     * @return
      */
     public ArrayList<MensajesGrupo> selectAllMensajesGrupo(int id_g)
     {
         ResultSet rs;
         ArrayList<MensajesGrupo> result = new ArrayList();
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM mensaje_grupo WHERE grupo = "+id_g);
             rs = stmt.executeQuery();
@@ -494,14 +494,14 @@ public class BaseDeDatos
         }
         return null;
     }
-    
+
     ///MENSAJES AMIGOS///
-    
+
     /**
      * Crea un nuevo mensaje en una amistadde un usuario en específico
      * @param id_u
      * @param id_a
-     * @return 
+     * @return
      */
     public int insertMensajeAmigos(int id_u, int id_a, String mensaje)
     {
@@ -513,18 +513,18 @@ public class BaseDeDatos
         }
         return 0;
     }
-    
+
     /**
      * Selecciona todos los mensajes de una amistad
      * @param id_a
      * @param id_g
-     * @return 
+     * @return
      */
     public ArrayList<MensajesAmigos> selectAllMensajesAmigos(int id_a)
     {
         ResultSet rs;
         ArrayList<MensajesAmigos> result = new ArrayList();
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM mensaje_amigo WHERE amistad = "+id_a);
             rs = stmt.executeQuery();
@@ -542,23 +542,23 @@ public class BaseDeDatos
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
+
         return null;
     }
     /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Grupo       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-    
+
     public int insertGrupo(String nombre){
          Grupo grupo = new Grupo();
          ResultSet rs;
          int id_g = 0;
-         
+
         try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO grupo (nombre) VALUES (?)");
             stmt.setString(1, nombre);
             stmt.executeUpdate();
-            
+
             stmt = con.prepareStatement("SELECT id_g FROM grupo");
             rs = stmt.executeQuery();
             while(rs.next()) {
@@ -568,20 +568,20 @@ public class BaseDeDatos
                 }
             }
             return id_g;
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
          return 0;
     }
-    
+
     public Grupo selectGrupo(int id_g){
         Grupo grupo = new Grupo();
         ResultSet rs;
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM grupo WHERE id = " + id_g);
-            
+
             rs = stmt.executeQuery();
             while(rs.next()) {
                 grupo.setId_g(rs.getInt("id_g"));
@@ -593,41 +593,17 @@ public class BaseDeDatos
         }
         return null;
     }
-    
+
     public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
         Grupo grupo = new Grupo();
         ResultSet rs;
-        
+
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
                                                         + " AND estado = 'Aceptado'");
-            
-            rs = stmt.executeQuery();
-            while(rs.next()){
-                grupo.setId_g(rs.getInt("id_g"));
-                grupo.setNombre(rs.getString("nombre"));
-                result.add(grupo);
-            }
-            return result;
-        } catch (SQLException ex) {
-            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
-    }
-    
-    public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
-        ArrayList<Grupo> result = new ArrayList();
-        Grupo grupo = new Grupo();
-        ResultSet rs;
-        
-        try {
-            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
-                                                        + "JOIN pertenece WHERE usuario = " + usuario
-                                                        + "AND id_g = grupo AND estado = 'Invitado'");
-            
+
             rs = stmt.executeQuery();
             while(rs.next()){
                 grupo.setId_g(rs.getInt("id_g"));
@@ -639,32 +615,56 @@ public class BaseDeDatos
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
         return null;
     }
-    
+
+    public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
+        ArrayList<Grupo> result = new ArrayList();
+        Grupo grupo = new Grupo();
+        ResultSet rs;
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
+                                                        + "JOIN pertenece WHERE usuario = " + usuario
+                                                        + "AND id_g = grupo AND estado = 'Invitado'");
+
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                grupo.setId_g(rs.getInt("id_g"));
+                grupo.setNombre(rs.getString("nombre"));
+                result.add(grupo);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        return null;
+    }
+
     public int updateGrupo(int id_g, String nombre) {
         try {
-            PreparedStatement stmt = con.prepareStatement("UPDATE grupo SET nombre = '" 
+            PreparedStatement stmt = con.prepareStatement("UPDATE grupo SET nombre = '"
                                                         + nombre + "' WHERE id_g = " + id_g);
-            
+
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return 0;
     }
-    
+
     public int deleteGrupo(int id_g) {
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE FROM grupo WHERE id_g = " + id_g);
-            
+
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return 0;
     }
 }
