@@ -33,6 +33,8 @@ public class BaseDeDatos
         }
     }
     
+    
+    ///USUARIO///
     public Usuario selectUser(String nick)
     {
         ResultSet rs;
@@ -109,6 +111,8 @@ public class BaseDeDatos
         }
         return 0;
     }
+    
+    ///PERTENENCIAS///
     
     public ArrayList<Pertenencia> selectAllPertenenciasFromUsuario(int id_u)
     {
@@ -305,6 +309,20 @@ public class BaseDeDatos
                                                         + "id_u1 = " + id_u1 + "AND id_u2 =" + id_u2 
                                                         + "OR id_u1 = " + id_u2 + "AND id_u2 =" + id_u1);
             
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    
+    ///MENSAJES GRUPO///
+    
+    public int createMensajeGrupo(int id_u, int id_g)
+    {
+         try {
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_grupo"); 
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);

@@ -64,7 +64,12 @@ public class ClientThread extends Thread {
                 user.setPassword(splitted[2]);
                 switch(splitted[0]){
                     case "signIn":
-                        user.setId(BD.insertUser(user.getNickname(), user.getPassword()));
+                        if(user.getNickname().equals(BD.selectUser(user.getNickname()).getNickname()))
+                        {
+                            os.print('0');
+                            break;
+                        }
+                        user.setId(BD.insertUser(user.getNickname(), user.getPassword())); 
                     case "login":
                         user=BD.selectUser(user.getNickname());
                         if(!splitted[2].equals(user.password)){
