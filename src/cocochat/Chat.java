@@ -81,7 +81,7 @@ public class Chat extends JFrame implements ActionListener{
         friendsList();
         JButton [] friendsButtons=initButtons(this.friendsList);
         JButton [] groupsButtons=initButtons(this.groupsList);
-        JButton [] onlineButtons=initButtons(this.onlineList);
+    JButton [] onlineButtons=initButtons(this.onlineList);
         JButton [] offlineButtons=initButtons(this.offlineList);
       //  groupsList();
         //messages();
