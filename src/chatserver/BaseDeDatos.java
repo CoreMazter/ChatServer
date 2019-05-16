@@ -5,14 +5,12 @@
  */
 package chatserver;
 
-import java.awt.List;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +55,7 @@ public class BaseDeDatos
         }
         return usuario;
     }
-    
+
     public ArrayList<Usuario> selectAllUsers()
     {
         ResultSet rs;
@@ -85,9 +83,127 @@ public class BaseDeDatos
     
     public int insertUser (String nick, String pass)
     {
+        ResultSet rs;
+        int id_u = 0;
         try 
         {
             PreparedStatement statement = con.prepareStatement("INSERT INTO usuario(nickname, password) VALUES ('"+nick+"', '"+pass+"')");
+            if(statement.executeUpdate() == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                statement = con.prepareStatement("SELECT id_u FROM usuario");
+                rs = statement.executeQuery();
+                while(rs.next())
+                {
+                    id_u = rs.getInt("id_u");
+                }
+                return id_u;
+            }
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    public ArrayList<Pertenencia> selectAllPertenenciasFromUsuario(int id_u)
+    {
+        ResultSet rs;
+        ArrayList<Pertenencia> res = new ArrayList();
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE usuario = "+id_u);    
+            rs = statement.executeQuery();
+            while(rs.next())
+            {
+                Pertenencia pertenencia = new Pertenencia();
+                pertenencia.setId_p(rs.getInt("id_p"));
+                pertenencia.setEstado(rs.getString("estado"));
+                pertenencia.setUsuario(rs.getInt("usuario"));
+                pertenencia.setGrupo(rs.getInt("grupo"));
+                res.add(pertenencia);
+            }
+            return res;
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public ArrayList<Pertenencia> selectAllPertenenciasFromGrupo(int id_g)
+    {
+        ResultSet rs;
+        ArrayList<Pertenencia> res = new ArrayList();
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE grupo = "+id_g);    
+            rs = statement.executeQuery();
+            while(rs.next())
+            {
+                Pertenencia pertenencia = new Pertenencia();
+                pertenencia.setId_p(rs.getInt("id_p"));
+                pertenencia.setEstado(rs.getString("estado"));
+                pertenencia.setUsuario(rs.getInt("usuario"));
+                pertenencia.setGrupo(rs.getInt("grupo"));
+                res.add(pertenencia);
+            }
+            return res;
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public int insertPertenencia(int  usuario, int grupo)
+    {
+        ResultSet rs;
+        int id_p = 0;
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("INSERT INTO pertenece(estado, usuario, grupo) VALUES ('Invitado',"+usuario+", "+grupo+")");
+            statement.executeUpdate();
+            statement = con.prepareStatement("SELECT id_p FROM pertenece");
+            rs = statement.executeQuery();
+            while (rs.next())
+            {
+                id_p = rs.getInt("id_p");
+            }
+            return id_p;
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    public int updatePertenencia(int id_p)
+    {
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("UPDATE pertenece SET estado = 'Aceptado' WHERE id_p = "+id_p);
+            return statement.executeUpdate();
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+     
+    public int deletePertenencia(int id_p)
+    {
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("DELETE FROM pertenece WHERE id_p = "+id_p);
             return statement.executeUpdate();
         } 
         catch (SQLException ex) 
