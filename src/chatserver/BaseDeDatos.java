@@ -63,6 +63,24 @@ public class BaseDeDatos
         }
         return usuario;
     }
+    public String selectUserById(int id)
+    {
+        ResultSet rs;
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id+"'");    
+            rs = statement.executeQuery();
+            while(rs.next())
+            {
+                 return(rs.getString("nickname"));
+            }
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
+    }
 
     
     /**
@@ -584,7 +602,11 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
+<<<<<<< HEAD
                                                         + " AND estado = 'Aceptado'");
+=======
+                                                        + " AND id_g = grupo AND estado = 'Aceptado'");
+>>>>>>> master
             
             rs = stmt.executeQuery();
             while(rs.next()){
