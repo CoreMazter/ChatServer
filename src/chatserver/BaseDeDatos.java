@@ -35,6 +35,12 @@ public class BaseDeDatos
     
     
     ///USUARIO///
+    
+    /**
+     * Selecciona un usuario basado en su nickname y regresa todos los datos en un POJO
+     * @param nick
+     * @return 
+     */
     public Usuario selectUser(String nick)
     {
         ResultSet rs;
@@ -58,6 +64,11 @@ public class BaseDeDatos
         return usuario;
     }
 
+    
+    /**
+     * Selecciona todos los usuarios de la BD
+     * @return 
+     */
     public ArrayList<Usuario> selectAllUsers()
     {
         ResultSet rs;
@@ -83,6 +94,13 @@ public class BaseDeDatos
         return null;
     }
     
+
+    /**
+     * Crea un nuevo usuario y regresa su ID
+     * @param nick
+     * @param pass
+     * @return 
+     */
     public int insertUser (String nick, String pass)
     {
         ResultSet rs;
@@ -114,6 +132,11 @@ public class BaseDeDatos
     
     ///PERTENENCIAS///
     
+    /**
+     * Selecciona todos los grupos a los que pertenece un usuario
+     * @param id_u
+     * @return 
+     */
     public ArrayList<Pertenencia> selectAllPertenenciasFromUsuario(int id_u)
     {
         ResultSet rs;
@@ -140,6 +163,11 @@ public class BaseDeDatos
         return null;
     }
     
+    /**
+     * Selecciona todos los usuarios que pertenecen a un grupo
+     * @param id_g
+     * @return 
+     */
     public ArrayList<Pertenencia> selectAllPertenenciasFromGrupo(int id_g)
     {
         ResultSet rs;
@@ -166,6 +194,12 @@ public class BaseDeDatos
         return null;
     }
     
+    /**
+     * Agrega una perteencia de un usuario a un grupo en un estado de Invitación
+     * @param usuario
+     * @param grupo
+     * @return 
+     */
     public int insertPertenencia(int  usuario, int grupo)
     {
         ResultSet rs;
@@ -189,6 +223,11 @@ public class BaseDeDatos
         return 0;
     }
     
+    /**
+     * Modifica el estado del usuario en un grupo de invitado a Aceptado
+     * @param id_p
+     * @return 
+     */
     public int updatePertenencia(int id_p)
     {
         try 
@@ -203,6 +242,12 @@ public class BaseDeDatos
         return 0;
     }
      
+    
+    /**
+     * Borra la pertenencia de un usuario a un grupo
+     * @param id_p
+     * @return 
+     */
     public int deletePertenencia(int id_p)
     {
         try 
@@ -221,6 +266,12 @@ public class BaseDeDatos
     Amigos     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     
+    /**
+     * Selecciona la amistad de dos usuarios en específico
+     * @param id_u1
+     * @param id_u2
+     * @return 
+     */
     public Amigos selectAmigos(int id_u1, int id_u2) {
         Amigos amigos = new Amigos();
         ResultSet rs;
@@ -248,9 +299,13 @@ public class BaseDeDatos
         return null;
     }
     
+    /**
+     * Selecciona todas las amistades de un usuario
+     * @param id_u1
+     * @return 
+     */
     public ArrayList<Amigos> selectAllAmigos(int id_u1) {
         ResultSet rs;
-        Amigos amigos = new Amigos();
         ArrayList<Amigos> result = new ArrayList();
         
         try {
@@ -259,6 +314,7 @@ public class BaseDeDatos
                                                         + "OR id_u2 = " + id_u1);
             rs = stmt.executeQuery();
             while(rs.next()) {
+                Amigos amigos = new Amigos();
                 amigos.setId(rs.getInt("id_a"));
                 amigos.setEstado(rs.getString("estado"));
                 amigos.setAlias1(rs.getString("alias1"));
@@ -274,6 +330,14 @@ public class BaseDeDatos
         return null;
     }
     
+    /**
+     * Inserta una nueva relación de amistad
+     * @param alias1
+     * @param alias2
+     * @param id_u1
+     * @param id_u2
+     * @return 
+     */
     public int insertAmigos(String alias1, String alias2, int id_u1, int id_u2) {
         try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO amigos"
@@ -291,6 +355,11 @@ public class BaseDeDatos
         return 0;
     }
     
+    /**
+     * Actualiza una amistad en específico y la pone como aceptada
+     * @param id_a
+     * @return 
+     */
     public int updateAmigos(int id_a) {
         try {
             PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' "
@@ -303,6 +372,12 @@ public class BaseDeDatos
         return 0;
     }
     
+    /**
+     * Borra una amistad en específico
+     * @param id_u1
+     * @param id_u2
+     * @return 
+     */
     public int deleteAmigos(int id_u1, int id_u2) {
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE FROM amigos WHERE "
@@ -319,14 +394,43 @@ public class BaseDeDatos
     
     ///MENSAJES GRUPO///
     
-    public int createMensajeGrupo(int id_u, int id_g)
+    /**
+     * Crea un nuevo mensaje en un grupo de un usuario en específico
+     * @param id_u
+     * @param id_g
+     * @return 
+     */
+    public int insertMensajeGrupo(int id_u, int id_g, String mensaje)
     {
          try {
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_grupo"); 
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_grupo (usuario, tiempo, grupo, mensaje) VALUES ("+id_u+", NOW(),"+id_g+", '"+mensaje+"')");
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+    
+    public ArrayList<MensajesGrupo> selectAllMensajesGrupo(int id_g)
+    {
+        ResultSet rs;
+        ArrayList<MensajesGrupo> result = new ArrayList();
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM mensaje_grupo WHERE grupo = "+id_g);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                MensajesGrupo mensajes = new MensajesGrupo();
+                mensajes.setId_mg(rs.getInt("id_mg"));
+                mensajes.setGrupo(rs.getInt("grupo"));
+                mensajes.setUsuario(rs.getInt("usuario"));
+                mensajes.setTimestamp(rs.getTimestamp("tiempo"));
+                result.add(mensajes);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }
