@@ -128,6 +128,7 @@ public class ClientThread extends Thread {
     }
 
     void init(){
+        final ArrayList<Usuario> online=new ArrayList<>();
         user = new Usuario();
         byte[] bytes;
         String command;
@@ -254,6 +255,41 @@ public class ClientThread extends Thread {
                         os.print("</grupos>");                        
                         initSteps++;
                         break;
+                    }
+                    case "online":{
+                        os.print("<online>");
+                        for(ClientThread thread:threads)
+                            if(thread!=this&&thread!=null)
+                                online.add(thread.user);
+                        online.forEach((user)->{
+                            os.print("<usuario>");
+                            os.print("<id>");
+                            os.print(""+user.getId());
+                            os.print("</id>");
+                            os.print("<nombre>");
+                            os.print(user.getNickname());
+                            os.print("</nombre>");
+                            os.print("</usuario>");
+
+                        });
+                        os.print("</online>");
+                    }
+                    case "offline":{
+                        ArrayList<Usuario> usuarios = BD.selectAllUsers();
+                        os.print("<offline>");
+                        usuarios.forEach((user)->{
+                            if(!online.contains(user)){
+                                os.print("<usuario>");
+                                os.print("<id>");
+                                os.print(""+user.getId());
+                                os.print("</id>");
+                                os.print("<nombre>");
+                                os.print(user.getNickname());
+                                os.print("</nombre>");
+                                os.print("</usuario>");
+                            }
+                        });
+                        os.print("</offline>");
                     }
                     default:
                         break;
