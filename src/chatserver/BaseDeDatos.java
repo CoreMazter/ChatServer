@@ -88,14 +88,20 @@ public class BaseDeDatos
         try 
         {
             PreparedStatement statement = con.prepareStatement("INSERT INTO usuario(nickname, password) VALUES ('"+nick+"', '"+pass+"')");
-            statement.executeUpdate();
-            statement = con.prepareStatement("SELECT id_u FROM usuario");
-            rs = statement.executeQuery();
-            while(rs.next())
+            if(statement.executeUpdate() == 0)
             {
-                id_u = rs.getInt("id_u");
+                return 0;
             }
-            return id_u;
+            else
+            {
+                statement = con.prepareStatement("SELECT id_u FROM usuario");
+                rs = statement.executeQuery();
+                while(rs.next())
+                {
+                    id_u = rs.getInt("id_u");
+                }
+                return id_u;
+            }
         } 
         catch (SQLException ex) 
         {
