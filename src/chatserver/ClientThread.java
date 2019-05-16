@@ -57,16 +57,24 @@ public class ClientThread extends Thread {
                                 case "amigo":{
                                     
                                 for (ClientThread thread : threads) {
+                                    if(thread!=this&&thread!=null){
+                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
+                                        }
+                                    }
+                                }
+                                    break;
+                                }
+                                case "grupo":{{
+                                    for (ClientThread thread : threads) {
                                     if(thread!=this){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
                                             thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
                                     }
-                    
                                 }
-                                    break;
+                                    
                                 }
-                                case "grupo":{
                                     break;
                                 }
                                 case "noamigo":{
@@ -154,7 +162,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<2){
+        while(initSteps<3){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
