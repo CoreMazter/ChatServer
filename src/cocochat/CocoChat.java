@@ -19,12 +19,11 @@ import java.util.logging.Logger;
  */
 public class CocoChat 
 {
-
     /**
      * @param args the command line arguments
      */
     static String server="127.0.0.1";
-    static int port=5501;
+    static int port=5001;
     public static void main(String[] args) 
     {   
         try {

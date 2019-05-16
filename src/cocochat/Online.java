@@ -7,9 +7,8 @@ package cocochat;
 
 /**
  *
- * @author lucas
+ * @author Jesús Martínez
  */
-public class Mensaje {
-    String origen;
-    String texto,tiempo;
+public class Online {
+    
 }
