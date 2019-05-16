@@ -317,7 +317,7 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
                                                         + "WHERE id_u1 = " + id_u1 
-                                                        + "OR id_u2 = " + id_u1);
+                                                        + " OR id_u2 = " + id_u1);
             rs = stmt.executeQuery();
             while(rs.next()) {
                 Amigos amigos = new Amigos();
