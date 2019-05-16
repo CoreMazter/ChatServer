@@ -40,9 +40,80 @@ public class ClientThread extends Thread {
 
     @Override
     public void run(){
+        byte[] bytes;
+        String command;
+        String[] splitted;
         init();
         while (true){
-
+            try {
+                if(clientSocket.getInputStream().available()!=0){
+                    bytes=new byte[clientSocket.getInputStream().available()];
+                    clientSocket.getInputStream().read(bytes);
+                    command= new String(bytes);
+                    splitted=command.split("<s>");
+                    switch(splitted[0]){
+                        case "mensaje":{
+                            switch(splitted[1]){
+                                case "amigo":{
+                                    
+                                for (ClientThread thread : threads) {
+                                    if(thread!=this){
+                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
+                                        }
+                                    }
+                    
+                                }
+                                    break;
+                                }
+                                case "grupo":{
+                                    break;
+                                }
+                                case "noamigo":{
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case "solicitud":{
+                            switch(splitted[1]){
+                                case "amigo":{
+                                    break;
+                                }
+                                case "grupo":{
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case "aceptar":{
+                            switch(splitted[1]){
+                                case "amigo":{
+                                    break;
+                                }
+                                case "grupo":{
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case "rechazar":{
+                            switch(splitted[1]){
+                                case "amigo":{
+                                    break;
+                                }
+                                case "grupo":{
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
 
@@ -83,7 +154,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<4){
+        while(initSteps<2){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
@@ -175,9 +246,6 @@ public class ClientThread extends Thread {
                         os.print("</grupos>");                        
                         initSteps++;
                         break;
-                    }
-                    case "messages":{
-                        
                     }
                     default:
                         break;
