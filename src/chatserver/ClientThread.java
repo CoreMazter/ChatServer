@@ -59,6 +59,8 @@ public class ClientThread extends Thread {
                                 for (ClientThread thread : threads) {
                                     if(thread!=this){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            Amigos amigos = BD.selectAmigos(user.getId(), thread.user.getId());
+                                            BD.insertMensajeAmigos(user.getId(), amigos.getId(), splitted[3]);
                                             thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
                                     }
@@ -67,9 +69,30 @@ public class ClientThread extends Thread {
                                     break;
                                 }
                                 case "grupo":{
+                                    BD.insertMensajeGrupo(user.getId(), Integer.parseInt(splitted[2]), splitted[3]);
+                                    for (ClientThread thread : threads) {
+                                    if(thread!=this){
+                                        ArrayList<Pertenencia> result = BD.selectAllPertenenciasFromUsuario(thread.user.getId());
+                                        result.forEach((resultado)->{
+                                            final int group = resultado.getGrupo();
+                                           if(group==Integer.parseInt(splitted[2])){
+                                            thread.os.print("mensaje<s>grupo<s>"+splitted[2]+"<s>"+splitted[3]);
+                                        }     
+                                        });
+                                    }
+                    
+                                }
                                     break;
                                 }
                                 case "noamigo":{
+                                    for (ClientThread thread : threads) {
+                                    if(thread!=this){
+                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
+                                        }
+                                    }
+                    
+                                }
                                     break;
                                 }
                             }
@@ -78,9 +101,24 @@ public class ClientThread extends Thread {
                         case "solicitud":{
                             switch(splitted[1]){
                                 case "amigo":{
+                                    for (ClientThread thread : threads) {
+                                    if(thread!=this){
+                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            BD.insertAmigos(user.getNickname(), thread.user.getNickname(), user.getId(), thread.user.getId());
+                                            thread.os.print("solicitud<s>amigo<s>"+user.getId());
+                                        }
+                                    }
                                     break;
-                                }
+                                }}
                                 case "grupo":{
+                                    for (ClientThread thread : threads) {
+                                    if(thread!=this){
+                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                            BD.insertPertenencia(user.getId(), Integer.parseInt(splitted[2]));
+                                            thread.os.print("solicitud<s>grupo<s>"+user.getId());
+                                        }
+                                    }
+                                }
                                     break;
                                 }
                             }
