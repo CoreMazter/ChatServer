@@ -195,4 +195,91 @@ public class BaseDeDatos
         }
         return 0;
     }
+    
+    /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Grupo       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    
+    public int insertGrupo(String nombre){
+         Grupo grupo = new Grupo();
+         ResultSet rs;
+         
+        try {
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO grupo (nombre) VALUES (?)");
+            stmt.setString(1, nombre);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return 0;
+    }
+    
+    public Grupo selectGrupo(int id_g){
+        Grupo grupo = new Grupo();
+        ResultSet rs;
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM grupo WHERE id = " + id_g);
+            
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                grupo.setId_g(rs.getInt("id_g"));
+                grupo.setNombre(rs.getString("nombre"));
+            }
+            return grupo;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public ArrayList<Grupo> selectAllGrupo(int usuario) {
+        ArrayList<Grupo> result = new ArrayList();
+        Grupo grupo = new Grupo();
+        ResultSet rs;
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
+                                                        + "JOIN pertenece WHERE usuario = " + usuario
+                                                        + "AND id_g = grupo");
+            
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                grupo.setId_g(rs.getInt("id_g"));
+                grupo.setNombre(rs.getString("nombre"));
+                result.add(grupo);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public int updateGrupo(int id_g, String nombre) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("UPDATE grupo SET nombre = '" 
+                                                        + nombre + "' WHERE id_g = " + id_g);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return 0;
+    }
+    
+    public int deleteGrupo(int id_g) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM grupo WHERE id_g = " + id_g);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return 0;
+    }
 }
