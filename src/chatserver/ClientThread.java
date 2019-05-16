@@ -108,9 +108,6 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
-<<<<<<< HEAD
-
-=======
                     case "groups":{
                         ArrayList<Grupo> grupos=BD.selectAllGrupoAceptado(user.getId());
                         os.print("<grupos>");
@@ -128,7 +125,6 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
->>>>>>> master
                     default:
                         break;
                 }
