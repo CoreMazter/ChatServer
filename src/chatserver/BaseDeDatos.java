@@ -602,11 +602,7 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
-<<<<<<< HEAD
                                                         + " AND estado = 'Aceptado'");
-=======
-                                                        + " AND id_g = grupo AND estado = 'Aceptado'");
->>>>>>> master
             
             rs = stmt.executeQuery();
             while(rs.next()){
