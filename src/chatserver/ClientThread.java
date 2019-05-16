@@ -95,6 +95,7 @@ public class ClientThread extends Thread {
                         ArrayList<Amigos> amigos=BD.selectAllAmigos(user.getId());
                         os.print("<amigos>");
                         amigos.forEach((amigo)->{
+                            ArrayList<MensajesAmigos> mensajes=BD.selectAllMensajesAmigos(amigo.id);
                             os.print("<amigo>");
                             os.print("<id>");
                             os.print(amigo.id_u1==user.getId()?amigo.id_u2:amigo.id_u1+"");
@@ -102,6 +103,21 @@ public class ClientThread extends Thread {
                             os.print("<alias>");
                             os.print(amigo.id_u1==user.getId()?amigo.alias2:amigo.alias1);
                             os.print("</alias>");
+                            os.print("<mensajes>");
+                            mensajes.forEach((mensaje)->{
+                                os.print("<mensaje>");
+                                os.print("<origen>");
+                                os.print(""+(mensaje.getUsuario()==user.getId()?0:mensaje.getUsuario()));
+                                os.print("</origen>");
+                                os.print("<texto>");
+                                os.print(mensaje.getMensaje());
+                                os.print("</texto>");
+                                os.print("<tiempo>");
+                                os.print(""+mensaje.getTimestamp());
+                                os.print("</tiempo>");
+                                os.print("</mensaje>");
+                            });
+                            os.print("</mensajes>");
                             os.print("</amigo>");
                         });
                         os.print("</amigos>");
@@ -110,6 +126,40 @@ public class ClientThread extends Thread {
                     }
                     case "groups":{
                         ArrayList<Grupo> grupos=BD.selectAllGrupoAceptado(user.getId());
+                        os.print("<grupos>");
+                        grupos.forEach((grupo)->{
+                            ArrayList<MensajesGrupo> mensajes=BD.selectAllMensajesGrupo(grupo.id_g);
+                            os.print("<grupo>");
+                            os.print("<id>");
+                            os.print(grupo.id_g+"");
+                            os.print("</id>");
+                            os.print("<nombre>");
+                            os.print(grupo.nombre);
+                            os.print("</nombre>");
+                            os.print("<mensajes>");
+                            mensajes.forEach((mensaje)->{
+                                os.print("<mensaje>");
+                                os.print("<origen>");
+                                os.print(""+(mensaje.getUsuario()==user.getId()?0:mensaje.getUsuario()));
+                                os.print("</origen>");
+                                os.print("<texto>");
+                                os.print(mensaje.getMensaje());
+                                os.print("</texto>");
+                                os.print("<tiempo>");
+                                os.print(""+mensaje.getTimestamp());
+                                os.print("</tiempo>");
+                                os.print("</mensaje>");
+                            });
+                            os.print("</mensajes>");
+                            os.print("</grupo>");
+                        });
+                        os.print("</grupos>");
+                        initSteps++;
+                        break;
+                    }
+                    case "requests":{
+                        
+                        ArrayList<Grupo> grupos=BD.selectAllGrupoInvitado(user.getId());
                         os.print("<grupos>");
                         grupos.forEach((grupo)->{
                             os.print("<grupo>");
@@ -121,9 +171,12 @@ public class ClientThread extends Thread {
                             os.print("</nombre>");
                             os.print("</grupo>");
                         });
-                        os.print("</grupos>");
+                        os.print("</grupos>");                        
                         initSteps++;
                         break;
+                    }
+                    case "messages":{
+                        
                     }
                     default:
                         break;
