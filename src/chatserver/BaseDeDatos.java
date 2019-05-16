@@ -33,13 +33,13 @@ public class BaseDeDatos
         }
     }
     
-    public Usuario selectUser(int id_u)
+    public Usuario selectUser(String nick)
     {
         ResultSet rs;
         Usuario usuario = new Usuario(0, "", "");
         try 
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id_u+"'");    
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE nickname='"+nick+"'");    
             rs = statement.executeQuery();
             while(rs.next())
             {

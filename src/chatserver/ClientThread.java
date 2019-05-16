@@ -66,7 +66,7 @@ public class ClientThread extends Thread {
                         BD.updatePertenencia(grupo);
                         BD.deletePertenencia(grupo);
                     case "login":
-                        user=BD.selectUser(user.getId());
+                        user=BD.selectUser(user.getNickname());
                         System.out.println("*"+user.password.length()+"*");
                         System.out.println("*"+input[2].length()+"*");
                         if(!input[2].equals(user.password)){
