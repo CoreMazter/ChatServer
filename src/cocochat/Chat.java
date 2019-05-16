@@ -62,9 +62,7 @@ public class Chat extends JFrame implements ActionListener{
    JButton send=new JButton("Enviar");
    JButton requests=new JButton("Solicitudes");
    
-   JButton [] groupsButtons=initButtons(this.groupsList);
-   JButton [] onlineButtons=initButtons(this.onlineList);
-   JButton [] offlineButtons=initButtons(this.offlineList);
+   
    Socket clientSocket = null;
    PrintStream os = null;
 
@@ -82,6 +80,9 @@ public class Chat extends JFrame implements ActionListener{
         this.os = os;
         friendsList();
         JButton [] friendsButtons=initButtons(this.friendsList);
+        JButton [] groupsButtons=initButtons(this.groupsList);
+        JButton [] onlineButtons=initButtons(this.onlineList);
+        JButton [] offlineButtons=initButtons(this.offlineList);
       //  groupsList();
         //messages();
         //requestList();
