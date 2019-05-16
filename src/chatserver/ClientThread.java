@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,6 +87,19 @@ public class ClientThread extends Thread {
                 splitted=command.split("<s>");
                 switch(splitted[0]){
                     case "friends":{
+                        ArrayList<Amigos> amigos=BD.selectAllAmigos(user.getId());
+                        os.print("<amigos>");
+                        amigos.forEach((amigo)->{
+                            os.print("<amigo>");
+                            os.print("<id>");
+                            os.print(amigo.id_u1==user.getId()?amigo.id_u2:amigo.id_u1+"");
+                            os.print("</id>");
+                            os.print("<alias>");
+                            os.print(amigo.id_u1==user.getId()?amigo.alias2:amigo.alias1);
+                            os.print("</alias>");
+                            os.print("</amigo>");
+                        });
+                        os.print("</amigos>");                        
                         initSteps++;
                         break;
                     }
