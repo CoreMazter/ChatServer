@@ -65,6 +65,11 @@ public class ClientThread extends Thread {
                 switch(splitted[0]){
                     case "signIn":
                         user.setId(BD.insertUser(user.getNickname(), user.getPassword()));
+                        if(user.getId()!=0)
+                            os.print('1');
+                        else
+                            os.print('0');
+                        break;
                     case "login":
                         user=BD.selectUser(user.getNickname());
                         if(!splitted[2].equals(user.password)){
@@ -103,6 +108,7 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
+                    
                     default:
                         break;
                 }
