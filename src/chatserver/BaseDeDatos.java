@@ -576,7 +576,7 @@ public class BaseDeDatos
         return null;
     }
     
-    public ArrayList<Grupo> selectAllGrupo(int usuario) {
+    public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
         Grupo grupo = new Grupo();
         ResultSet rs;
@@ -584,7 +584,31 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
-                                                        + "AND id_g = grupo");
+                                                        + "AND id_g = grupo AND estado = 'Aceptado'");
+            
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                grupo.setId_g(rs.getInt("id_g"));
+                grupo.setNombre(rs.getString("nombre"));
+                result.add(grupo);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
+        ArrayList<Grupo> result = new ArrayList();
+        Grupo grupo = new Grupo();
+        ResultSet rs;
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
+                                                        + "JOIN pertenece WHERE usuario = " + usuario
+                                                        + "AND id_g = grupo AND estado = 'Invitado'");
             
             rs = stmt.executeQuery();
             while(rs.next()){
