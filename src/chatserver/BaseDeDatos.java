@@ -63,6 +63,24 @@ public class BaseDeDatos
         }
         return usuario;
     }
+    public String selectUserById(int id)
+    {
+        ResultSet rs;
+        try 
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id+"'");    
+            rs = statement.executeQuery();
+            while(rs.next())
+            {
+                 return(rs.getString("nickname"));
+            }
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
+    }
 
     
     /**
@@ -118,7 +136,10 @@ public class BaseDeDatos
                 rs = statement.executeQuery();
                 while(rs.next())
                 {
-                    id_u = rs.getInt("id_u");
+                    if(rs.getInt("id_u")>id_u)
+                    {
+                        id_u = rs.getInt("id_u");
+                    }
                 }
                 return id_u;
             }
@@ -212,7 +233,10 @@ public class BaseDeDatos
             rs = statement.executeQuery();
             while (rs.next())
             {
-                id_p = rs.getInt("id_p");
+                if(rs.getInt("rs_p")> id_p)
+                {
+                    id_p = rs.getInt("id_p");
+                }
             }
             return id_p;
         } 
@@ -311,7 +335,7 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
                                                         + "WHERE id_u1 = " + id_u1 
-                                                        + "OR id_u2 = " + id_u1);
+                                                        + " OR id_u2 = " + id_u1);
             rs = stmt.executeQuery();
             while(rs.next()) {
                 Amigos amigos = new Amigos();
@@ -339,16 +363,34 @@ public class BaseDeDatos
      * @return 
      */
     public int insertAmigos(String alias1, String alias2, int id_u1, int id_u2) {
+        ResultSet rs;
+        int id_a = 0;
         try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO amigos"
                                                         + "(estado, alias1, alias2, id_u1, id_u2)"
                                                         + "VALUES('Pendiente', ?, ?, ?, ?)");
-            stmt.setInt(1, id_u1);
-            stmt.setInt(2, id_u2);
-            stmt.setString(3, alias1);
-            stmt.setString(4, alias2);
+            stmt.setString(1, alias1);
+            stmt.setString(2, alias2);
+            stmt.setInt(3, id_u1);
+            stmt.setInt(4, id_u2);
             
-            return stmt.executeUpdate();
+            if (stmt.executeUpdate() == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                stmt = con.prepareStatement("SELECT id_a FROM amigos");
+                rs = stmt.executeQuery();
+                while(rs.next())
+                {
+                    if(rs.getInt("id_a")>id_a)
+                    {
+                        id_a = rs.getInt("id_a");
+                    }
+                }
+            }
+            return id_a;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -424,6 +466,11 @@ public class BaseDeDatos
         return 0;
     }
     
+    /**
+     * Selecciona todos los mensajes de un grupo
+     * @param id_g
+     * @return 
+     */
     public ArrayList<MensajesGrupo> selectAllMensajesGrupo(int id_g)
     {
         ResultSet rs;
@@ -438,6 +485,56 @@ public class BaseDeDatos
                 mensajes.setGrupo(rs.getInt("grupo"));
                 mensajes.setUsuario(rs.getInt("usuario"));
                 mensajes.setTimestamp(rs.getTimestamp("tiempo"));
+                mensajes.setMensaje(rs.getString("mensaje"));
+                result.add(mensajes);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    ///MENSAJES AMIGOS///
+    
+    /**
+     * Crea un nuevo mensaje en una amistadde un usuario en específico
+     * @param id_u
+     * @param id_a
+     * @return 
+     */
+    public int insertMensajeAmigos(int id_u, int id_a, String mensaje)
+    {
+         try {
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_amigo (usuario, tiempo, amistad, mensaje) VALUES ("+id_u+", NOW(),"+id_a+", '"+mensaje+"')");
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    /**
+     * Selecciona todos los mensajes de una amistad
+     * @param id_a
+     * @param id_g
+     * @return 
+     */
+    public ArrayList<MensajesAmigos> selectAllMensajesAmigos(int id_a)
+    {
+        ResultSet rs;
+        ArrayList<MensajesAmigos> result = new ArrayList();
+        
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM mensaje_amigo WHERE amistad = "+id_a);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                MensajesAmigos mensajes = new MensajesAmigos();
+                mensajes.setId_ma(rs.getInt("id_ma"));
+                mensajes.setAmistad(rs.getInt("amistad"));
+                mensajes.setUsuario(rs.getInt("usuario"));
+                mensajes.setTimestamp(rs.getTimestamp("tiempo"));
+                mensajes.setMensaje(rs.getString("mensaje"));
                 result.add(mensajes);
                 }
             return result;
@@ -465,7 +562,10 @@ public class BaseDeDatos
             stmt = con.prepareStatement("SELECT id_g FROM grupo");
             rs = stmt.executeQuery();
             while(rs.next()) {
-                id_g = rs.getInt("id_g");
+                if(rs.getInt("id_g")>id_g)
+                {
+                    id_g = rs.getInt("id_g");
+                }
             }
             return id_g;
             
@@ -502,7 +602,8 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
-                                                        + "AND id_g = grupo AND estado = 'Aceptado'");
+                                                        + " AND estado = 'Aceptado'");
+
             
             rs = stmt.executeQuery();
             while(rs.next()){
