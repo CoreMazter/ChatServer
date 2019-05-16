@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,39 +26,43 @@ public class ClientThread extends Thread {
     private final ClientThread[] threads;
     private int maxClientsCount;
     private BaseDeDatos BD;
-
-    String inputs;
-    String[] input;
     public ClientThread(Socket clientSocket, BaseDeDatos BD, ClientThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
         this.BD=BD;
         maxClientsCount = threads.length;
+        try {
+            os = new PrintStream(clientSocket.getOutputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
     public void run(){
-        
+        init();
+        while (true){
+            
+        }
+                
+ 
+    }
+    
+    void init(){
         user = new Usuario();
-        try{
-            is= new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            os = new PrintStream(clientSocket.getOutputStream());
-            byte[] bytes;
-                    
-            while(user.getId()==0){
-                System.out.println("asdjaosfjoia");
+        byte[] bytes;
+        String command;
+        String[] splitted;
+        while(user.getId()==0){
+            try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
-                
                 clientSocket.getInputStream().read(bytes);
-                inputs= new String(bytes);
-                System.out.println("flñkasdmflksamdlkfm");
-                System.out.println(" asdasd    ");
-                input=inputs.split(" ");
-                user.setNickname(input[1]);
-                user.setPassword(input[2]);
-                input[2]=input[2];
-                switch(input[0]){
+                command= new String(bytes);
+                splitted=command.split(" ");
+                user.setNickname(splitted[1]);
+                user.setPassword(splitted[2]);
+                switch(splitted[0]){
                     case "signIn":
                         user.setId(BD.insertUser(user.getNickname(), user.getPassword()));
                         System.out.println("USER:"+user.getId());
@@ -67,24 +72,49 @@ public class ClientThread extends Thread {
                         BD.deletePertenencia(grupo);
                     case "login":
                         user=BD.selectUser(user.getNickname());
-                        System.out.println("*"+user.password.length()+"*");
-                        System.out.println("*"+input[2].length()+"*");
-                        if(!input[2].equals(user.password)){
+                        if(!splitted[2].equals(user.password)){
                             user.setId(0);
                             os.print('0');
                         }else os.print('1');
                         break;
                 }
-                
-            }
-            while(true){
-                
-            }
-        }catch(IOException ex){
-        Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         }
-                
- 
+        int initSteps=0;
+        while(initSteps<4){
+            try {
+                while(clientSocket.getInputStream().available()==0);
+                bytes=new byte[clientSocket.getInputStream().available()];
+                clientSocket.getInputStream().read(bytes);
+                command= new String(bytes);
+                splitted=command.split("<s>");
+                switch(splitted[0]){
+                    case "friends":{
+                        ArrayList<Amigos> amigos=BD.selectAllAmigos(user.getId());
+                        os.print("<amigos>");
+                        amigos.forEach((amigo)->{
+                            os.print("<amigo>");
+                            os.print("<id>");
+                            os.print(amigo.id_u1==user.getId()?amigo.id_u2:amigo.id_u1+"");
+                            os.print("</id>");
+                            os.print("<alias>");
+                            os.print(amigo.id_u1==user.getId()?amigo.alias2:amigo.alias1);
+                            os.print("</alias>");
+                            os.print("</amigo>");
+                        });
+                        os.print("</amigos>");                        
+                        initSteps++;
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            }        
+        }
     }
    
 }   
