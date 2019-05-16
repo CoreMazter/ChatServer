@@ -11,57 +11,58 @@ import java.sql.Timestamp;
  *
  * @author lghhs
  */
-public class MensajesGrupo {
-    private int id_mg;
+public class MensajesAmigos {
+    private int id_ma;
     private int usuario;
-    private int grupo;
-    private String mensaje;
+    private int amistad;
     private Timestamp timestamp;
+    private String mensaje;
     
     /**
-     * Constructor vacío que inicializa todo en 0 y null
+     * Constructor vacío que inicializa todas las variables en 0 y null
      */
-    public MensajesGrupo ()
+    public MensajesAmigos ()
     {
-        id_mg = 0;
+        id_ma = 0;
         usuario = 0;
-        grupo = 0;
+        amistad = 0;
         timestamp = null;
     }
     
     /**
-     * Connstructor para asignar todas las variables del mensaje
+     * Constructor que recibe los valores necesarios para crear un mensaje
+     * @param id_ma
      * @param usuario
-     * @param grupo
+     * @param amistad
      * @param timestamp 
      */
-    public MensajesGrupo(int id_mg, int usuario, int grupo, Timestamp timestamp, String mensaje)
+    public MensajesAmigos(int id_ma, int usuario, int amistad, Timestamp timestamp, String mensaje)
     {
-        this.id_mg = id_mg;
+        this.id_ma = id_ma;
         this.usuario = usuario;
-        this.grupo = grupo;
+        this.amistad = amistad;
         this.timestamp = timestamp;
         this.mensaje = mensaje;
     }
 
     /**
-     * Obtiene la id del mensaje
+     * Obtiene el id del mensaje
      * @return 
      */
-    public int getId_mg() {
-        return id_mg;
+    public int getId_ma() {
+        return id_ma;
     }
 
     /**
-     * Coloca la id a un mensaje
-     * @param id_mg 
+     * Coloca un id de mensaje
+     * @param id_ma 
      */
-    public void setId_mg(int id_mg) {
-        this.id_mg = id_mg;
+    public void setId_ma(int id_ma) {
+        this.id_ma = id_ma;
     }
 
     /**
-     * Obtiene la id del usaurio del mensaje
+     * Obtiene el id del usaurio del mensaje
      * @return 
      */
     public int getUsuario() {
@@ -69,7 +70,7 @@ public class MensajesGrupo {
     }
 
     /**
-     * Coloca la id del usuario del mensaje
+     * Coloca el id del usuario del mensaje
      * @param usuario 
      */
     public void setUsuario(int usuario) {
@@ -77,19 +78,19 @@ public class MensajesGrupo {
     }
 
     /**
-     * Obtiene la id del grupo del mensaje
+     * Obtiene el id de la relación de amistad en la cual está el mensaje
      * @return 
      */
-    public int getGrupo() {
-        return grupo;
+    public int getAmistad() {
+        return amistad;
     }
 
     /**
-     * Coloca la id del grupo  del mensaje
-     * @param grupo 
+     * Coloca el id de la relación de amistad
+     * @param amistad 
      */
-    public void setGrupo(int grupo) {
-        this.grupo = grupo;
+    public void setAmistad(int amistad) {
+        this.amistad = amistad;
     }
 
     /**
@@ -117,7 +118,7 @@ public class MensajesGrupo {
     }
 
     /**
-     * Coloca un mensaje
+     * Coloca el mensaje
      * @param mensaje 
      */
     public void setMensaje(String mensaje) {
