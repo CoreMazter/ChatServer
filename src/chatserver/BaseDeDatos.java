@@ -600,9 +600,7 @@ public class BaseDeDatos
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
-                                                        + "JOIN pertenece WHERE usuario = " + usuario
-                                                        + " AND estado = 'Aceptado'");
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM pertenece, grupo WHERE usuario ="+usuario+" AND estado = 'Aceptado' AND pertenece.grupo = grupo.id_g; ");
 
             rs = stmt.executeQuery();
             while(rs.next()){
