@@ -334,8 +334,9 @@ public class BaseDeDatos
 
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
-                                                        + "WHERE id_u1 = " + id_u1
-                                                        + " OR id_u2 = " + id_u1);
+                                                        + "WHERE estado = 'Aceptado' "
+                                                        + "AND (id_u1 = " + id_u1
+                                                        + " OR id_u2 = " + id_u1+")");
             rs = stmt.executeQuery();
             while(rs.next()) {
                 Amigos amigos = new Amigos();
@@ -366,8 +367,8 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
                                                         + "WHERE estado = 'Pendiente' "
-                                                        + "AND id_u1 = " + id_u1 
-                                                        + "OR id_u2 = " + id_u1);
+                                                        + "AND (id_u1 = " + id_u1 
+                                                        + " OR id_u2 = " + id_u1+")");
             rs = stmt.executeQuery();
             while(rs.next()) {
                 Amigos amigos = new Amigos();
