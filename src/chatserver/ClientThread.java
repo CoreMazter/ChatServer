@@ -200,7 +200,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<3){
+        while(initSteps<5){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
@@ -310,14 +310,23 @@ public class ClientThread extends Thread {
 
                         });
                         os.print("</online>");
+                        initSteps++;
                         break;
                     }
 
                     case "offline":{
                         ArrayList<Usuario> usuarios = BD.selectAllUsers();
                         os.print("<offline>");
-                        usuarios.forEach((user)->{
-                            if(!online.contains(user)&&user.getId()!=this.user.getId()){
+                        usuarios.forEach((Usuario user)->{
+                            Boolean cont = false;
+                            for(int i = 0; i < online.size(); i++)
+                            {
+                                if(online.get(i).getId() == user.getId())
+                                {
+                                    cont = true;
+                                }
+                            }
+                            if(!cont&&(user.getId()!=this.user.getId())){
                                 os.print("<usuario>");
                                 os.print("<id>");
                                 os.print(""+user.getId());
@@ -329,6 +338,7 @@ public class ClientThread extends Thread {
                             }
                         });
                         os.print("</offline>");
+                        initSteps++;
                         break;
                     }
                     default:
