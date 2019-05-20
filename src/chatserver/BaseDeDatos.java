@@ -435,19 +435,19 @@ public class BaseDeDatos
      * @param id_a
      * @return
      */
-    public int updateAmigos(int id_a, String alias) {
-        String aliasActual = "";
+    public int updateAmigos(int id_a, int id, String alias) {
+        int id_u2 = 0;
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT alias1 from amigos WHERE id_a = " + id_a);
+            PreparedStatement stmt = con.prepareStatement("SELECT * from amigos WHERE id_a = " + id_a);
             rs = stmt.executeQuery();
 
             while(rs.next()) {
-                aliasActual = rs.getString("alias1");
+                id_u2 = rs.getInt("id_u2");
             }
 
-            if (aliasActual.equals(alias))
+            if (id == id_u2)
                 stmt = con.prepareStatement("UPDATE amigos SET alias1 = " + alias + "WHERE id_a = " + id_a);
             else
                 stmt = con.prepareStatement("UPDATE amigos SET alias2 = " + alias + "WHERE id_a = " + id_a);
