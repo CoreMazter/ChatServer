@@ -348,5 +348,11 @@ public class ClientThread extends Thread {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        for (ClientThread thread : threads) {
+            if(thread!=null&&thread!=this){
+                    thread.os.print("online<s>"+user.getId()+"<s>"+user.getNickname());
+            }
+        }
+                                   
     }
 }
