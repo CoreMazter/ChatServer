@@ -273,12 +273,14 @@ public class ClientThread extends Thread {
 
                         });
                         os.print("</online>");
+                        break;
                     }
+                    
                     case "offline":{
                         ArrayList<Usuario> usuarios = BD.selectAllUsers();
                         os.print("<offline>");
                         usuarios.forEach((user)->{
-                            if(!online.contains(user)){
+                            if(!online.contains(user)&&user.getId()!=this.user.getId()){
                                 os.print("<usuario>");
                                 os.print("<id>");
                                 os.print(""+user.getId());
@@ -290,6 +292,7 @@ public class ClientThread extends Thread {
                             }
                         });
                         os.print("</offline>");
+                        break;
                     }
                     default:
                         break;
