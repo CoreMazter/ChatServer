@@ -96,10 +96,9 @@ public class ClientThread extends Thread {
                                     for (ClientThread thread : threads) {
                                     if(thread!=this){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
-                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
+                                            thread.os.print("mensaje<s>noamigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
                                     }
-
                                 }
                                     break;
                                 }
