@@ -193,7 +193,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<3){
+        while(initSteps<5){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
@@ -303,6 +303,7 @@ public class ClientThread extends Thread {
 
                         });
                         os.print("</online>");
+                        initSteps++;
                         break;
                     }
                     
@@ -322,6 +323,7 @@ public class ClientThread extends Thread {
                             }
                         });
                         os.print("</offline>");
+                        initSteps++;
                         break;
                     }
                     default:
