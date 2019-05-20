@@ -200,7 +200,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<5){
+        while(initSteps<6){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
@@ -290,6 +290,30 @@ public class ClientThread extends Thread {
                             os.print("</grupo>");
                         });
                         os.print("</grupos>");
+                        initSteps++;
+                        break;
+                    }
+                    case "requestsAmigo":{
+                        ArrayList<Amigos> amigos = BD.selectAllAmigosInvitados(user.getId());
+                        os.print("<amigos>");
+                        amigos.forEach((Amigos amigo)->{
+                            os.print("<amigo>");
+                            os.print("<id>");
+                            os.print(amigo.id+"");
+                            os.print("</id>");
+                            os.print("<nombre>");
+                            if(user.getId() == amigo.getId_u1())
+                            {
+                                os.print(amigo.getAlias1());
+                            }
+                            else
+                            {
+                                os.print(amigo.getAlias2());
+                            }
+                            os.print("</nombre>");
+                            os.print("</amigo>");
+                        });
+                        os.print("</amigos>");
                         initSteps++;
                         break;
                     }

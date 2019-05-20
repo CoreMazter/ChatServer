@@ -355,6 +355,38 @@ public class BaseDeDatos
     }
 
     /**
+     * Selecciona todas las amistades de un usuario
+     * @param id_u1
+     * @return
+     */
+    public ArrayList<Amigos> selectAllAmigosInvitados(int id_u1) {
+        ResultSet rs;
+        ArrayList<Amigos> result = new ArrayList();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
+                                                        + "WHERE estado = 'Pendiente' "
+                                                        + "AND id_u1 = " + id_u1 
+                                                        + "OR id_u2 = " + id_u1);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                Amigos amigos = new Amigos();
+                amigos.setId(rs.getInt("id_a"));
+                amigos.setEstado(rs.getString("estado"));
+                amigos.setAlias1(rs.getString("alias1"));
+                amigos.setAlias2(rs.getString("alias2"));
+                amigos.setId_u1(rs.getInt("id_u1"));
+                amigos.setId_u2(rs.getInt("id_u2"));
+                result.add(amigos);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    /**
      * Inserta una nueva relación de amistad
      * @param alias1
      * @param alias2
