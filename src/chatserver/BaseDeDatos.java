@@ -426,7 +426,41 @@ public class BaseDeDatos
         }
         return 0;
     }
+    
+    /**
+     * Acepta una solicitud de amistad
+     * @param id_a
+     * @return
+     */
+    
+    public int acceptFriendRequest(int id_a) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' WHERE id_a = " + id_a);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 
+    /**
+     * Elimina una solicitud de amistad
+     * @param id_a
+     * @return
+     */
+    
+    public int deleteFreindRequest(int id_a) {
+        try {
+            PreparedStatement stmt = con.prepareStatement("DELETE from amigos WHERE id_a = " + id_a);
+            
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
     /**
      * Borra una amistad en específico
      * @param id_u1
