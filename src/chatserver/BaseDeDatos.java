@@ -302,8 +302,8 @@ public class BaseDeDatos
 
         try {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM amigos "
-                                                        + "WHERE id_u1 = " + id_u1 + "AND id_u2 = " + id_u2
-                                                        + "OR id_u1 = " + id_u2 + "AND id_u2 = " + id_u1);
+                                                        + "WHERE id_u1 = " + id_u1 + " AND id_u2 = " + id_u2
+                                                        + " OR id_u1 = " + id_u2 + " AND id_u2 = " + id_u1);
             rs = statement.executeQuery();
             while(rs.next()) {
                 amigos.setId(rs.getInt("id_a"));
@@ -450,7 +450,7 @@ public class BaseDeDatos
      * @return
      */
     
-    public int deleteFreindRequest(int id_a) {
+    public int deleteFriendRequest(int id_a) {
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE from amigos WHERE id_a = " + id_a);
             
