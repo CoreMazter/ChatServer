@@ -658,7 +658,7 @@ public class BaseDeDatos
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM grupo "
                                                         + "JOIN pertenece WHERE usuario = " + usuario
-                                                        + "AND id_g = grupo AND estado = 'Invitado'");
+                                                        + " AND id_g = grupo AND estado = 'Invitado'");
 
             rs = stmt.executeQuery();
             while(rs.next()){
