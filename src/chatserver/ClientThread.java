@@ -57,18 +57,18 @@ public class ClientThread extends Thread {
                                 case "amigo":{
                                     
                                 for (ClientThread thread : threads) {
-                                    if(thread!=this){
+                                    if(thread!=this&&thread!=null){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
                                             Amigos amigos = BD.selectAmigos(user.getId(), thread.user.getId());
                                             BD.insertMensajeAmigos(user.getId(), amigos.getId(), splitted[3]);
                                             thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
                                     }
-                    
                                 }
                                     break;
                                 }
-                                case "grupo":{
+
+                                /*case "grupo":{
                                     BD.insertMensajeGrupo(user.getId(), Integer.parseInt(splitted[2]), splitted[3]);
                                     for (ClientThread thread : threads) {
                                     if(thread!=this){
@@ -80,10 +80,10 @@ public class ClientThread extends Thread {
                                         }     
                                         });
                                     }
-                    
+          
                                 }
                                     break;
-                                }
+                                }*/
                                 case "noamigo":{
                                     for (ClientThread thread : threads) {
                                     if(thread!=this){
@@ -158,6 +158,7 @@ public class ClientThread extends Thread {
     }
 
     void init(){
+        final ArrayList<Usuario> online=new ArrayList<>();
         user = new Usuario();
         byte[] bytes;
         String command;
@@ -192,7 +193,7 @@ public class ClientThread extends Thread {
             }
         }
         int initSteps=0;
-        while(initSteps<2){
+        while(initSteps<3){
             try {
                 while(clientSocket.getInputStream().available()==0);
                 bytes=new byte[clientSocket.getInputStream().available()];
@@ -283,6 +284,44 @@ public class ClientThread extends Thread {
                         });
                         os.print("</grupos>");                        
                         initSteps++;
+                        break;
+                    }
+                    case "online":{
+                        os.print("<online>");
+                        for(ClientThread thread:threads)
+                            if(thread!=this&&thread!=null)
+                                online.add(thread.user);
+                        online.forEach((user)->{
+                            os.print("<usuario>");
+                            os.print("<id>");
+                            os.print(""+user.getId());
+                            os.print("</id>");
+                            os.print("<nombre>");
+                            os.print(user.getNickname());
+                            os.print("</nombre>");
+                            os.print("</usuario>");
+
+                        });
+                        os.print("</online>");
+                        break;
+                    }
+                    
+                    case "offline":{
+                        ArrayList<Usuario> usuarios = BD.selectAllUsers();
+                        os.print("<offline>");
+                        usuarios.forEach((user)->{
+                            if(!online.contains(user)&&user.getId()!=this.user.getId()){
+                                os.print("<usuario>");
+                                os.print("<id>");
+                                os.print(""+user.getId());
+                                os.print("</id>");
+                                os.print("<nombre>");
+                                os.print(user.getNickname());
+                                os.print("</nombre>");
+                                os.print("</usuario>");
+                            }
+                        });
+                        os.print("</offline>");
                         break;
                     }
                     default:
