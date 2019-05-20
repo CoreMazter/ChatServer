@@ -304,11 +304,11 @@ public class ClientThread extends Thread {
                             os.print("<nombre>");
                             if(user.getId() == amigo.getId_u1())
                             {
-                                os.print(amigo.getAlias1());
+                                os.print(amigo.getAlias2());
                             }
                             else
                             {
-                                os.print(amigo.getAlias2());
+                                os.print(amigo.getAlias1());
                             }
                             os.print("</nombre>");
                             os.print("</amigo>");
