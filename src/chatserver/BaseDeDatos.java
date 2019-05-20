@@ -302,8 +302,8 @@ public class BaseDeDatos
 
         try {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM amigos "
-                                                        + "WHERE id_u1 = " + id_u1 + "AND id_u2 = " + id_u2
-                                                        + "OR id_u1 = " + id_u2 + "AND id_u2 = " + id_u1);
+                                                        + "WHERE id_u1 = " + id_u1 + " AND id_u2 = " + id_u2
+                                                        + " OR id_u1 = " + id_u2 + " AND id_u2 = " + id_u1);
             rs = statement.executeQuery();
             while(rs.next()) {
                 amigos.setId(rs.getInt("id_a"));
@@ -450,7 +450,7 @@ public class BaseDeDatos
      * @return
      */
     
-    public int deleteFreindRequest(int id_a) {
+    public int deleteFriendRequest(int id_a) {
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE from amigos WHERE id_a = " + id_a);
             
@@ -630,14 +630,14 @@ public class BaseDeDatos
 
     public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
-        Grupo grupo = new Grupo();
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM pertenece, grupo WHERE usuario ="+usuario+" AND estado = 'Aceptado' AND pertenece.grupo = grupo.id_g; ");
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM pertenece, grupo WHERE usuario ="+usuario+" AND estado = 'Aceptado' AND pertenece.grupo = grupo.id_g;");
 
             rs = stmt.executeQuery();
             while(rs.next()){
+                Grupo grupo = new Grupo();
                 grupo.setId_g(rs.getInt("id_g"));
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
@@ -652,7 +652,6 @@ public class BaseDeDatos
 
     public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
-        Grupo grupo = new Grupo();
         ResultSet rs;
 
         try {
@@ -662,6 +661,7 @@ public class BaseDeDatos
 
             rs = stmt.executeQuery();
             while(rs.next()){
+                Grupo grupo = new Grupo();
                 grupo.setId_g(rs.getInt("id_g"));
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
