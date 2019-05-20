@@ -596,14 +596,14 @@ public class BaseDeDatos
 
     public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
-        Grupo grupo = new Grupo();
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM pertenece, grupo WHERE usuario ="+usuario+" AND estado = 'Aceptado' AND pertenece.grupo = grupo.id_g; ");
+            PreparedStatement stmt = con.prepareStatement("SELECT id_g, nombre FROM pertenece, grupo WHERE usuario ="+usuario+" AND estado = 'Aceptado' AND pertenece.grupo = grupo.id_g;");
 
             rs = stmt.executeQuery();
             while(rs.next()){
+                Grupo grupo = new Grupo();
                 grupo.setId_g(rs.getInt("id_g"));
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
@@ -618,7 +618,6 @@ public class BaseDeDatos
 
     public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
         ArrayList<Grupo> result = new ArrayList();
-        Grupo grupo = new Grupo();
         ResultSet rs;
 
         try {
@@ -628,6 +627,7 @@ public class BaseDeDatos
 
             rs = stmt.executeQuery();
             while(rs.next()){
+                Grupo grupo = new Grupo();
                 grupo.setId_g(rs.getInt("id_g"));
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
