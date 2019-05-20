@@ -12,6 +12,8 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -40,6 +42,7 @@ public class ClientThread extends Thread {
 
     @Override
     public void run(){
+        user = new Usuario();
         byte[] bytes;
         String command;
         String[] splitted;
@@ -55,35 +58,40 @@ public class ClientThread extends Thread {
                         case "mensaje":{
                             switch(splitted[1]){
                                 case "amigo":{
-                                    
+                                Amigos amigos = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[2]));
+                                int id = BD.insertMensajeAmigos(user.getId(), amigos.getId(), splitted[3]);
+                                Date date= new Date();
+                                long time = date.getTime();
+                                Timestamp ts = new Timestamp(time);
                                 for (ClientThread thread : threads) {
                                     if(thread!=this&&thread!=null){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
-                                            Amigos amigos = BD.selectAmigos(user.getId(), thread.user.getId());
-                                            BD.insertMensajeAmigos(user.getId(), amigos.getId(), splitted[3]);
-                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
+                                            thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]+"<s>"+ts);
                                         }
                                     }
                                 }
                                     break;
                                 }
-
-                                /*case "grupo":{
+                                case "grupo":{
                                     BD.insertMensajeGrupo(user.getId(), Integer.parseInt(splitted[2]), splitted[3]);
+                                    Date date= new Date();
+                                    long time = date.getTime();
+                                    Timestamp ts = new Timestamp(time);
                                     for (ClientThread thread : threads) {
-                                    if(thread!=this){
-                                        ArrayList<Pertenencia> result = BD.selectAllPertenenciasFromUsuario(thread.user.getId());
-                                        result.forEach((resultado)->{
-                                            final int group = resultado.getGrupo();
-                                           if(group==Integer.parseInt(splitted[2])){
-                                            thread.os.print("mensaje<s>grupo<s>"+splitted[2]+"<s>"+splitted[3]);
-                                        }     
-                                        });
+                                    if(thread!=this&&thread!=null){
+                                        ArrayList<Grupo> result = new ArrayList();
+                                        result = BD.selectAllGrupoAceptado(thread.user.getId());
+                                        for(int i = 0; i < result.size(); i++)
+                                        {
+                                            if(result.get(i).getId_g()==Integer.parseInt(splitted[2])){
+                                            thread.os.print("mensaje<s>grupo<s>"+splitted[2]+"<s>"+user.getNickname()+"<s>"+splitted[3]+"<s>"+ts);
+                                            }
+                                        }
                                     }
-          
+
                                 }
                                     break;
-                                }*/
+                                }
                                 case "noamigo":{
                                     for (ClientThread thread : threads) {
                                     if(thread!=this){
@@ -91,7 +99,7 @@ public class ClientThread extends Thread {
                                             thread.os.print("mensaje<s>amigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
                                     }
-                    
+
                                 }
                                     break;
                                 }
@@ -147,14 +155,13 @@ public class ClientThread extends Thread {
                             break;
                         }
                     }
-                
+
                 }
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
     }
 
     void init(){
@@ -251,7 +258,7 @@ public class ClientThread extends Thread {
                                 os.print("<mensaje>");
                                 os.print("<origen>");
                                 os.print((mensaje.getUsuario()==user.getId()?"0":BD.selectUserById(mensaje.getUsuario())));
-                                
+
                                 os.print("</origen>");
                                 os.print("<texto>");
                                 os.print(mensaje.getMensaje());
@@ -269,7 +276,7 @@ public class ClientThread extends Thread {
                         break;
                     }
                     case "requests":{
-                        
+
                         ArrayList<Grupo> grupos=BD.selectAllGrupoInvitado(user.getId());
                         os.print("<grupos>");
                         grupos.forEach((grupo)->{
@@ -282,7 +289,7 @@ public class ClientThread extends Thread {
                             os.print("</nombre>");
                             os.print("</grupo>");
                         });
-                        os.print("</grupos>");                        
+                        os.print("</grupos>");
                         initSteps++;
                         break;
                     }
@@ -306,12 +313,20 @@ public class ClientThread extends Thread {
                         initSteps++;
                         break;
                     }
-                    
+
                     case "offline":{
                         ArrayList<Usuario> usuarios = BD.selectAllUsers();
                         os.print("<offline>");
-                        usuarios.forEach((user)->{
-                            if(!online.contains(user)&&user.getId()!=this.user.getId()){
+                        usuarios.forEach((Usuario user)->{
+                            Boolean cont = false;
+                            for(int i = 0; i < online.size(); i++)
+                            {
+                                if(online.get(i).getId() == user.getId())
+                                {
+                                    cont = true;
+                                }
+                            }
+                            if(!cont&&(user.getId()!=this.user.getId())){
                                 os.print("<usuario>");
                                 os.print("<id>");
                                 os.print(""+user.getId());
@@ -334,5 +349,4 @@ public class ClientThread extends Thread {
             }
         }
     }
-
 }
