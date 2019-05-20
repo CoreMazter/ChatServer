@@ -459,6 +459,5 @@ public class ClientThread extends Thread {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }*/
-
+    }
 }
