@@ -232,6 +232,7 @@ public class ClientThread extends Thread {
                                             }
                                          }
                                     }
+                                    break;
                                 }
                                 case "grupo":{
                                     ArrayList<Pertenencia> grupos = new ArrayList();
@@ -253,6 +254,7 @@ public class ClientThread extends Thread {
                                                 );
                                             }
                                          }
+                                    break;
                                 }
                             }
                         }
