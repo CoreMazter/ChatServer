@@ -134,9 +134,17 @@ public class ClientThread extends Thread {
                         case "aceptar":{
                             switch(splitted[1]){
                                 case "amigo":{
+                                    Amigos amigos = new Amigos();
+                                    amigos = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[2]));
+                                    BD.acceptFriendRequest(amigos.id);
+                                    os.print("aceptado<s>amistad<s>"+Integer.parseInt(splitted[2]));
                                     break;
                                 }
                                 case "grupo":{
+                                    Pertenencia pertenencia = new Pertenencia();
+                                    pertenencia = BD.selectPertenencia(user.getId(), Integer.parseInt(splitted[2]));
+                                    BD.updatePertenencia(pertenencia.getId_p());
+                                    os.print("aceptado<s>grupo<s>"+Integer.parseInt(splitted[2]));
                                     break;
                                 }
                             }
@@ -145,13 +153,26 @@ public class ClientThread extends Thread {
                         case "rechazar":{
                             switch(splitted[1]){
                                 case "amigo":{
+                                    Amigos amigos = new Amigos();
+                                    amigos = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[2]));
+                                    BD.deleteFriendRequest(amigos.getId());
+                                    os.print("rechazado<s>amistad<s>"+Integer.parseInt(splitted[2]));
                                     break;
                                 }
                                 case "grupo":{
+                                    Pertenencia pertenencia = new Pertenencia();
+                                    pertenencia = BD.selectPertenencia(user.getId(), Integer.parseInt(splitted[2]));
+                                    BD.deletePertenencia(pertenencia.getId_p());
+                                    os.print("rechazado<s>grupo<s>"+Integer.parseInt(splitted[2]));
                                     break;
                                 }
                             }
                             break;
+                        }
+                        case "alias":{
+                            Amigos amigo = new Amigos();
+                            amigo = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[1]));
+                            BD.updateAmigos(amigo.id, user.getId(), splitted[2]);
                         }
                     }
 
@@ -244,7 +265,8 @@ public class ClientThread extends Thread {
                         ArrayList<Grupo> grupos=BD.selectAllGrupoAceptado(user.getId());
                         os.print("<grupos>");
                         grupos.forEach((grupo)->{
-                            ArrayList<MensajesGrupo> mensajes=BD.selectAllMensajesGrupo(grupo.id_g);
+                            ArrayList<MensajesGrupo> mensajes= new ArrayList();
+                            mensajes = BD.selectAllMensajesGrupo(grupo.id_g);
                             os.print("<grupo>");
                             os.print("<id>");
                             os.print(grupo.id_g+"");
@@ -298,7 +320,14 @@ public class ClientThread extends Thread {
                         amigos.forEach((Amigos amigo)->{
                             os.print("<amigo>");
                             os.print("<id>");
-                            os.print(amigo.id+"");
+                            if(user.getId() == amigo.getId_u1())
+                            {
+                                os.print(amigo.getId_u2());
+                            }
+                            else
+                            {
+                                os.print(amigo.getId_u1());
+                            }
                             os.print("</id>");
                             os.print("<nombre>");
                             if(user.getId() == amigo.getId_u1())
