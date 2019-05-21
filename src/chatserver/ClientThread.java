@@ -200,6 +200,62 @@ public class ClientThread extends Thread {
                             amigo = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[1]));
                             BD.updateAmigos(amigo.id, user.getId(), splitted[2]);
                         }
+                        case "nuevo":{
+                            int idg = BD.insertGrupo(splitted[1]);
+                            int p = BD.insertPertenencia(user.getId(), idg);
+                            BD.updatePertenencia(p);
+                            Grupo grupo = new Grupo();
+                            grupo = BD.selectGrupo(idg);
+                            os.print("nuevo<s>"+grupo.id_g+"<s>"+grupo.nombre);
+                        }
+                        case "eliminar":{
+                            switch(splitted[1])
+                            {
+                                case "persona":{
+                                    Usuario usuario = new Usuario();
+                                    usuario = BD.selectUser(splitted[2]);
+                                    if(usuario.getId() == 0)
+                                    {
+                                        os.print("noencontrado");
+                                    }
+                                    else
+                                    {
+                                        Pertenencia pertenencia = new Pertenencia();
+                                        pertenencia = BD.selectPertenencia(usuario.getId(), Integer.parseInt(splitted[3]));
+                                        BD.deletePertenencia(pertenencia.getId_p());
+                                        os.print("eliminadoen");
+                                        for (ClientThread thread : threads) {
+                                            if(thread!=this&&thread!=null){
+                                                if(thread.user.getId()==usuario.getId()){
+                                                    thread.os.append("eliminar<s>"+Integer.parseInt(splitted[3]));
+                                                }
+                                            }
+                                         }
+                                    }
+                                }
+                                case "grupo":{
+                                    ArrayList<Pertenencia> grupos = new ArrayList();
+                                    grupos = BD.selectAllPertenenciasFromGrupo(Integer.parseInt(splitted[2]));
+                                    final int grupito = Integer.parseInt(splitted[2]);
+                                    grupos.forEach((grupo)->
+                                    {
+                                        BD.deletePertenencia(grupo.getId_p());
+                                    }
+                                    );
+                                    for (ClientThread thread : threads) {
+                                            if(thread!=this&&thread!=null){
+                                                grupos.forEach((grupo)->
+                                                {
+                                                    if(thread.user.getId()==grupo.getUsuario()){
+                                                    thread.os.append("eliminar<s>"+grupito);
+                                                }
+                                                }
+                                                );
+                                            }
+                                         }
+                                }
+                            }
+                        }
                     }
                     lock.unlock();
                 }

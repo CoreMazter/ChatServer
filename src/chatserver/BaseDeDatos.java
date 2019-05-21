@@ -218,7 +218,7 @@ public class BaseDeDatos
         ArrayList<Pertenencia> res = new ArrayList();
         try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE usuario = "+id_u);
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE AND usuario = "+id_u);
             rs = statement.executeQuery();
             while(rs.next())
             {
@@ -252,7 +252,7 @@ public class BaseDeDatos
         ArrayList<Pertenencia> res = new ArrayList();
         try
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE grupo = "+id_g);
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE estado = 'Aceptado' AND grupo = "+id_g);
             rs = statement.executeQuery();
             while(rs.next())
             {
