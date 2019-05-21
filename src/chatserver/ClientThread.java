@@ -94,7 +94,7 @@ public class ClientThread extends Thread {
                                 }
                                 case "noamigo":{
                                     for (ClientThread thread : threads) {
-                                    if(thread!=this){
+                                    if(thread!=this&&thread!=null){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
                                             thread.os.print("mensaje<s>noamigo<s>"+user.getId()+"<s>"+splitted[3]);
                                         }
@@ -129,6 +129,7 @@ public class ClientThread extends Thread {
                                         BD.insertPertenencia(usuario.getId(), Integer.parseInt(splitted[2]));
                                         Grupo grupo = new Grupo();
                                         grupo = BD.selectGrupo(Integer.parseInt(splitted[2]));
+                                        os.print("encontrado");
                                         for (ClientThread thread : threads) {
                                             if(thread!=this&&thread!=null){
                                                 if(thread.user.getId()==usuario.getId()){
