@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 /**
@@ -26,12 +27,14 @@ public class ClientThread extends Thread {
     private PrintStream os = null;
     private Socket clientSocket = null;
     private final ClientThread[] threads;
+    private ReentrantLock lock;
     private int maxClientsCount;
     private BaseDeDatos BD;
     public ClientThread(Socket clientSocket, BaseDeDatos BD, ClientThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
         this.BD=BD;
+        this.lock = new ReentrantLock();
         maxClientsCount = threads.length;
         try {
             os = new PrintStream(clientSocket.getOutputStream());
@@ -50,6 +53,7 @@ public class ClientThread extends Thread {
         while (true){
             try {
                 if(clientSocket.getInputStream().available()!=0){
+                    lock.lock();
                     bytes=new byte[clientSocket.getInputStream().available()];
                     clientSocket.getInputStream().read(bytes);
                     command= new String(bytes);
@@ -197,7 +201,7 @@ public class ClientThread extends Thread {
                             BD.updateAmigos(amigo.id, user.getId(), splitted[2]);
                         }
                     }
-
+                    lock.unlock();
                 }
             }
             catch (IOException ex) {
@@ -207,6 +211,7 @@ public class ClientThread extends Thread {
     }
 
     void init(){
+        lock.lock();
         final ArrayList<Usuario> online=new ArrayList<>();
         user = new Usuario();
         byte[] bytes;
@@ -427,6 +432,6 @@ public class ClientThread extends Thread {
                     thread.os.print("online<s>"+user.getId()+"<s>"+user.getNickname());
             }
         }
-                                   
+        lock.unlock();                       
     }
 }

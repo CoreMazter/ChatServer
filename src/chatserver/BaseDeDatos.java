@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 public class BaseDeDatos
 {
     private Connection con;
+    public ReentrantLock lock;
     public BaseDeDatos()
     {
         try
@@ -31,6 +33,7 @@ public class BaseDeDatos
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.lock = new ReentrantLock();
     }
 
 
@@ -43,6 +46,7 @@ public class BaseDeDatos
      */
     public Usuario selectUser(String nick)
     {
+        lock.lock();
         ResultSet rs;
         Usuario usuario = new Usuario(0, "", "");
         try
@@ -55,16 +59,20 @@ public class BaseDeDatos
                 usuario.setNickname(rs.getString("nickname"));
                 usuario.setPassword(rs.getString("password").replaceAll("[^\\x20-\\x7e]", "").replaceAll("\\p{C}", ""));
             }
+            lock.unlock();
             return usuario;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return usuario;
     }
+    
     public Usuario selectUserById(int id)
     {
+        lock.lock();
         ResultSet rs;
         Usuario usuario = new Usuario(0, "", "");
         try
@@ -77,12 +85,14 @@ public class BaseDeDatos
                 usuario.setNickname(rs.getString("nickname"));
                 usuario.setPassword(rs.getString("password").replaceAll("[^\\x20-\\x7e]", "").replaceAll("\\p{C}", ""));
             }
+            lock.unlock();
             return usuario;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return usuario;
     }
 
@@ -93,6 +103,7 @@ public class BaseDeDatos
      */
     public ArrayList<Usuario> selectAllUsers()
     {
+        lock.lock();
         ResultSet rs;
         ArrayList<Usuario> res = new ArrayList();
         try
@@ -107,12 +118,14 @@ public class BaseDeDatos
                 usuario.setPassword(rs.getString("password"));
                 res.add(usuario);
             }
+            lock.unlock();
             return res;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
@@ -125,6 +138,7 @@ public class BaseDeDatos
      */
     public int insertUser (String nick, String pass)
     {
+        lock.lock();
         ResultSet rs;
         int id_u = 0;
         try
@@ -145,6 +159,7 @@ public class BaseDeDatos
                         id_u = rs.getInt("id_u");
                     }
                 }
+                lock.unlock();
                 return id_u;
             }
         }
@@ -152,6 +167,7 @@ public class BaseDeDatos
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -165,6 +181,7 @@ public class BaseDeDatos
      */
     public Pertenencia selectPertenencia(int id_u, int id_g)
     {
+        lock.lock();
         ResultSet rs;
         Pertenencia pertenencia = new Pertenencia();
         try
@@ -178,12 +195,14 @@ public class BaseDeDatos
                 pertenencia.setUsuario(rs.getInt("usuario"));
                 pertenencia.setGrupo(rs.getInt("grupo"));
             }
+            lock.unlock();
             return pertenencia;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
     
@@ -194,6 +213,7 @@ public class BaseDeDatos
      */
     public ArrayList<Pertenencia> selectAllPertenenciasFromUsuario(int id_u)
     {
+        lock.lock();
         ResultSet rs;
         ArrayList<Pertenencia> res = new ArrayList();
         try
@@ -209,12 +229,14 @@ public class BaseDeDatos
                 pertenencia.setGrupo(rs.getInt("grupo"));
                 res.add(pertenencia);
             }
+            lock.unlock();
             return res;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
@@ -225,6 +247,7 @@ public class BaseDeDatos
      */
     public ArrayList<Pertenencia> selectAllPertenenciasFromGrupo(int id_g)
     {
+        lock.lock();
         ResultSet rs;
         ArrayList<Pertenencia> res = new ArrayList();
         try
@@ -240,12 +263,14 @@ public class BaseDeDatos
                 pertenencia.setGrupo(rs.getInt("grupo"));
                 res.add(pertenencia);
             }
+            lock.unlock();
             return res;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
@@ -257,6 +282,7 @@ public class BaseDeDatos
      */
     public int insertPertenencia(int  usuario, int grupo)
     {
+        lock.lock();
         ResultSet rs;
         int id_p = 0;
         try
@@ -272,12 +298,14 @@ public class BaseDeDatos
                     id_p = rs.getInt("id_p");
                 }
             }
+            lock.unlock();
             return id_p;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -288,15 +316,18 @@ public class BaseDeDatos
      */
     public int updatePertenencia(int id_p)
     {
+        lock.lock();
         try
         {
             PreparedStatement statement = con.prepareStatement("UPDATE pertenece SET estado = 'Aceptado' WHERE id_p = "+id_p);
+            lock.unlock();
             return statement.executeUpdate();
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -308,15 +339,18 @@ public class BaseDeDatos
      */
     public int deletePertenencia(int id_p)
     {
+        lock.lock();
         try
         {
             PreparedStatement statement = con.prepareStatement("DELETE FROM pertenece WHERE id_p = "+id_p);
+            lock.unlock();
             return statement.executeUpdate();
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -331,6 +365,7 @@ public class BaseDeDatos
      * @return
      */
     public Amigos selectAmigos(int id_u1, int id_u2) {
+        lock.lock();
         Amigos amigos = new Amigos();
         ResultSet rs;
 
@@ -347,13 +382,14 @@ public class BaseDeDatos
                 amigos.setId_u1(rs.getInt("id_u1"));
                 amigos.setId_u2(rs.getInt("id_u2"));
             }
+            lock.unlock();
             return amigos;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        lock.unlock(); 
         return null;
     }
 
@@ -363,6 +399,7 @@ public class BaseDeDatos
      * @return
      */
     public ArrayList<Amigos> selectAllAmigos(int id_u1) {
+        lock.lock();
         ResultSet rs;
         ArrayList<Amigos> result = new ArrayList();
 
@@ -382,10 +419,12 @@ public class BaseDeDatos
                 amigos.setId_u2(rs.getInt("id_u2"));
                 result.add(amigos);
             }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
@@ -395,6 +434,7 @@ public class BaseDeDatos
      * @return
      */
     public ArrayList<Amigos> selectAllAmigosInvitados(int id_u1) {
+        lock.lock();
         ResultSet rs;
         ArrayList<Amigos> result = new ArrayList();
 
@@ -414,10 +454,12 @@ public class BaseDeDatos
                 amigos.setId_u2(rs.getInt("id_u2"));
                 result.add(amigos);
             }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
     
@@ -430,6 +472,7 @@ public class BaseDeDatos
      * @return
      */
     public int insertAmigos(String alias1, String alias2, int id_u1, int id_u2) {
+        lock.lock();
         ResultSet rs;
         int id_a = 0;
         try {
@@ -443,6 +486,7 @@ public class BaseDeDatos
 
             if (stmt.executeUpdate() == 0)
             {
+                lock.unlock();
                 return 0;
             }
             else
@@ -457,10 +501,12 @@ public class BaseDeDatos
                     }
                 }
             }
+            lock.unlock();
             return id_a;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -471,6 +517,7 @@ public class BaseDeDatos
      * @return
      */
     public int updateAmigos(int id_a, int id, String alias) {
+        lock.lock();
         int id_u2 = 0;
         ResultSet rs;
 
@@ -487,10 +534,12 @@ public class BaseDeDatos
             else
                 stmt = con.prepareStatement("UPDATE amigos SET alias2 = '" + alias + "' WHERE id_a = " + id_a);
 
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
     
@@ -501,13 +550,15 @@ public class BaseDeDatos
      */
     
     public int acceptFriendRequest(int id_a) {
+        lock.lock();
         try {
             PreparedStatement stmt = con.prepareStatement("UPDATE amigos SET estado = 'Aceptado' WHERE id_a = " + id_a);
-            
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -518,13 +569,15 @@ public class BaseDeDatos
      */
     
     public int deleteFriendRequest(int id_a) {
+        lock.lock();
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE from amigos WHERE id_a = " + id_a);
-            
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
     
@@ -535,15 +588,17 @@ public class BaseDeDatos
      * @return
      */
     public int deleteAmigos(int id_u1, int id_u2) {
+        lock.lock();
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE FROM amigos WHERE "
                                                         + "id_u1 = " + id_u1 + "AND id_u2 =" + id_u2
                                                         + "OR id_u1 = " + id_u2 + "AND id_u2 =" + id_u1);
-
+            lock.unlock();  
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return 0;
     }
 
@@ -558,12 +613,15 @@ public class BaseDeDatos
      */
     public int insertMensajeGrupo(int id_u, int id_g, String mensaje)
     {
+        lock.lock();
          try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_grupo (usuario, tiempo, grupo, mensaje) VALUES ("+id_u+", NOW(),"+id_g+", '"+mensaje+"')");
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+         lock.unlock();
         return 0;
     }
 
@@ -574,6 +632,7 @@ public class BaseDeDatos
      */
     public ArrayList<MensajesGrupo> selectAllMensajesGrupo(int id_g)
     {
+        lock.lock();
         ResultSet rs;
         ArrayList<MensajesGrupo> result = new ArrayList();
 
@@ -589,10 +648,12 @@ public class BaseDeDatos
                 mensajes.setMensaje(rs.getString("mensaje"));
                 result.add(mensajes);
             }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
@@ -606,12 +667,15 @@ public class BaseDeDatos
      */
     public int insertMensajeAmigos(int id_u, int id_a, String mensaje)
     {
+        lock.lock();
          try {
             PreparedStatement stmt = con.prepareStatement("INSERT INTO mensaje_amigo (usuario, tiempo, amistad, mensaje) VALUES ("+id_u+", NOW(),"+id_a+", '"+mensaje+"')");
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+         lock.unlock();
         return 0;
     }
 
@@ -623,6 +687,7 @@ public class BaseDeDatos
      */
     public ArrayList<MensajesAmigos> selectAllMensajesAmigos(int id_a)
     {
+        lock.lock();
         ResultSet rs;
         ArrayList<MensajesAmigos> result = new ArrayList();
 
@@ -638,12 +703,13 @@ public class BaseDeDatos
                 mensajes.setMensaje(rs.getString("mensaje"));
                 result.add(mensajes);
                 }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
+        lock.unlock();
         return null;
     }
     /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,6 +717,7 @@ public class BaseDeDatos
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
     public int insertGrupo(String nombre){
+        lock.lock();
          Grupo grupo = new Grupo();
          ResultSet rs;
          int id_g = 0;
@@ -668,15 +735,18 @@ public class BaseDeDatos
                     id_g = rs.getInt("id_g");
                 }
             }
+            lock.unlock();
             return id_g;
 
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
          return 0;
     }
 
     public Grupo selectGrupo(int id_g){
+        lock.lock();
         Grupo grupo = new Grupo();
         ResultSet rs;
 
@@ -688,14 +758,17 @@ public class BaseDeDatos
                 grupo.setId_g(rs.getInt("id_g"));
                 grupo.setNombre(rs.getString("nombre"));
             }
+            lock.unlock();
             return grupo;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        lock.unlock();
         return null;
     }
 
     public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
+        lock.lock();
         ArrayList<Grupo> result = new ArrayList();
         ResultSet rs;
 
@@ -709,15 +782,17 @@ public class BaseDeDatos
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
             }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        lock.unlock();
         return null;
     }
 
     public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
+        lock.lock();
         ArrayList<Grupo> result = new ArrayList();
         ResultSet rs;
 
@@ -733,37 +808,40 @@ public class BaseDeDatos
                 grupo.setNombre(rs.getString("nombre"));
                 result.add(grupo);
             }
+            lock.unlock();
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
+        lock.unlock();
         return null;
     }
 
     public int updateGrupo(int id_g, String nombre) {
+        lock.lock();
         try {
             PreparedStatement stmt = con.prepareStatement("UPDATE grupo SET nombre = '"
                                                         + nombre + "' WHERE id_g = " + id_g);
-
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        lock.unlock();
         return 0;
     }
 
     public int deleteGrupo(int id_g) {
+        lock.lock();
         try {
             PreparedStatement stmt = con.prepareStatement("DELETE FROM grupo WHERE id_g = " + id_g);
-
+            lock.unlock();
             return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        lock.unlock();
         return 0;
     }
 }
