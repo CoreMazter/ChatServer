@@ -24,7 +24,7 @@ public class ChatServer {
     public static void main(String[] args) {
         BaseDeDatos BD = new BaseDeDatos();
      try {
-            serverSocket=new ServerSocket(4000);
+            serverSocket=new ServerSocket(5000);
         } catch (IOException ex) {
             Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
         }
