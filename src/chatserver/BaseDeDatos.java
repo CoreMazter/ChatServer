@@ -263,7 +263,7 @@ public class BaseDeDatos
             rs = statement.executeQuery();
             while (rs.next())
             {
-                if(rs.getInt("rs_p")> id_p)
+                if(rs.getInt("id_p")> id_p)
                 {
                     id_p = rs.getInt("id_p");
                 }
@@ -677,7 +677,7 @@ public class BaseDeDatos
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT * FROM grupo WHERE id = " + id_g);
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM grupo WHERE id_g = " + id_g);
 
             rs = stmt.executeQuery();
             while(rs.next()) {

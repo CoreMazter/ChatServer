@@ -109,7 +109,7 @@ public class ClientThread extends Thread {
                             switch(splitted[1]){
                                 case "amigo":{
                                     for (ClientThread thread : threads) {
-                                    if(thread!=this){
+                                    if(thread!=this&&thread!=null){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
                                             BD.insertAmigos(user.getNickname(), thread.user.getNickname(), user.getId(), thread.user.getId());
                                             thread.os.print("solicitud<s>amigo<s>"+user.getId());
@@ -118,14 +118,25 @@ public class ClientThread extends Thread {
                                     break;
                                 }}
                                 case "grupo":{
-                                    for (ClientThread thread : threads) {
-                                    if(thread!=this){
-                                        if(thread.user.getId()==Integer.parseInt(splitted[2])){
-                                            BD.insertPertenencia(user.getId(), Integer.parseInt(splitted[2]));
-                                            thread.os.print("solicitud<s>grupo<s>"+user.getId());
+                                    Usuario usuario = new Usuario();
+                                    usuario = BD.selectUser(splitted[3]);
+                                    if(usuario.getId() == 0)
+                                    {
+                                        os.print("noencontrado");
+                                    }
+                                    else
+                                    {
+                                        BD.insertPertenencia(usuario.getId(), Integer.parseInt(splitted[2]));
+                                        Grupo grupo = new Grupo();
+                                        grupo = BD.selectGrupo(Integer.parseInt(splitted[2]));
+                                        for (ClientThread thread : threads) {
+                                            if(thread!=this&&thread!=null){
+                                                if(thread.user.getId()==usuario.getId()){
+                                                    thread.os.print("solicitud<s>grupo<s>"+grupo.id_g+"<s>"+grupo.nombre);
+                                                }
+                                            }
                                         }
                                     }
-                                }
                                     break;
                                 }
                             }
