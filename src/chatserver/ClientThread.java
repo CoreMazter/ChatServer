@@ -108,15 +108,18 @@ public class ClientThread extends Thread {
                         case "solicitud":{
                             switch(splitted[1]){
                                 case "amigo":{
+                                    Usuario usuario = new Usuario();
+                                    usuario = BD.selectUserById(Integer.parseInt(splitted[2]));
+                                    BD.insertAmigos(user.getNickname(), usuario.getNickname(), user.getId(), usuario.getId());
                                     for (ClientThread thread : threads) {
                                     if(thread!=this&&thread!=null){
                                         if(thread.user.getId()==Integer.parseInt(splitted[2])){
-                                            BD.insertAmigos(user.getNickname(), thread.user.getNickname(), user.getId(), thread.user.getId());
-                                            thread.os.print("solicitud<s>amigo<s>"+user.getId());
+                                            thread.os.print("solicitud<s>amistad<s>"+user.getId()+"<s>"+user.getNickname());
                                         }
+                                    }   
                                     }
                                     break;
-                                }}
+                                }
                                 case "grupo":{
                                     Usuario usuario = new Usuario();
                                     usuario = BD.selectUser(splitted[3]);
@@ -150,6 +153,13 @@ public class ClientThread extends Thread {
                                     amigos = BD.selectAmigos(user.getId(), Integer.parseInt(splitted[2]));
                                     BD.acceptFriendRequest(amigos.id);
                                     os.print("aceptado<s>amistad<s>"+Integer.parseInt(splitted[2]));
+                                    for (ClientThread thread : threads) {
+                                        if(thread!=this&&thread!=null){
+                                            if(thread.user.getId()==Integer.parseInt(splitted[2])){
+                                                thread.os.print("solicitud<s>amigoaceptada<s>"+user.getId()+"<s>"+user.getNickname());
+                                            }
+                                        }
+                                     }
                                     break;
                                 }
                                 case "grupo":{

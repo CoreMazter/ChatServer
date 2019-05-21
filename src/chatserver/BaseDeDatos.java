@@ -63,23 +63,27 @@ public class BaseDeDatos
         }
         return usuario;
     }
-    public String selectUserById(int id)
+    public Usuario selectUserById(int id)
     {
         ResultSet rs;
+        Usuario usuario = new Usuario(0, "", "");
         try
         {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM usuario WHERE id_u='"+id+"'");
             rs = statement.executeQuery();
             while(rs.next())
             {
-                 return(rs.getString("nickname"));
+                usuario.setId(rs.getInt("id_u"));
+                usuario.setNickname(rs.getString("nickname"));
+                usuario.setPassword(rs.getString("password").replaceAll("[^\\x20-\\x7e]", "").replaceAll("\\p{C}", ""));
             }
+            return usuario;
         }
         catch (SQLException ex)
         {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "";
+        return usuario;
     }
 
 
