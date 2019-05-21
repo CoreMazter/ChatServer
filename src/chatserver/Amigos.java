@@ -10,8 +10,8 @@ package chatserver;
  * @author Kevin_Medina
  */
 public class Amigos {
-    protected int id, id_u1, id_u2;
-    protected String alias1, alias2, estado;
+    public int id, id_u1, id_u2;
+    public String alias1, alias2, estado;
 
     public void setId(int id) {
         this.id = id;

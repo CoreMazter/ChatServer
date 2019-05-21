@@ -154,6 +154,36 @@ public class BaseDeDatos
     ///PERTENENCIAS///
 
     /**
+     * Recibe un usuario y grupo y regresa su pertenencia
+     * @param id_u
+     * @param id_g
+     * @return 
+     */
+    public Pertenencia selectPertenencia(int id_u, int id_g)
+    {
+        ResultSet rs;
+        Pertenencia pertenencia = new Pertenencia();
+        try
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM pertenece WHERE usuario = "+id_u+" AND grupo = "+id_g);
+            rs = statement.executeQuery();
+            while(rs.next())
+            {
+                pertenencia.setId_p(rs.getInt("id_p"));
+                pertenencia.setEstado(rs.getString("estado"));
+                pertenencia.setUsuario(rs.getInt("usuario"));
+                pertenencia.setGrupo(rs.getInt("grupo"));
+            }
+            return pertenencia;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    /**
      * Selecciona todos los grupos a los que pertenece un usuario
      * @param id_u
      * @return
@@ -334,8 +364,9 @@ public class BaseDeDatos
 
         try {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
-                                                        + "WHERE id_u1 = " + id_u1
-                                                        + " OR id_u2 = " + id_u1);
+                                                        + "WHERE estado = 'Aceptado' "
+                                                        + "AND (id_u1 = " + id_u1
+                                                        + " OR id_u2 = " + id_u1+")");
             rs = stmt.executeQuery();
             while(rs.next()) {
                 Amigos amigos = new Amigos();
@@ -354,6 +385,38 @@ public class BaseDeDatos
         return null;
     }
 
+    /**
+     * Selecciona todas las amistades de un usuario
+     * @param id_u1
+     * @return
+     */
+    public ArrayList<Amigos> selectAllAmigosInvitados(int id_u1) {
+        ResultSet rs;
+        ArrayList<Amigos> result = new ArrayList();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM amigos "
+                                                        + "WHERE estado = 'Pendiente' "
+                                                        + "AND (id_u1 = " + id_u1 
+                                                        + " OR id_u2 = " + id_u1+")");
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                Amigos amigos = new Amigos();
+                amigos.setId(rs.getInt("id_a"));
+                amigos.setEstado(rs.getString("estado"));
+                amigos.setAlias1(rs.getString("alias1"));
+                amigos.setAlias2(rs.getString("alias2"));
+                amigos.setId_u1(rs.getInt("id_u1"));
+                amigos.setId_u2(rs.getInt("id_u2"));
+                result.add(amigos);
+            }
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     /**
      * Inserta una nueva relación de amistad
      * @param alias1
@@ -403,22 +466,22 @@ public class BaseDeDatos
      * @param id_a
      * @return
      */
-    public int updateAmigos(int id_a, String alias) {
-        String aliasActual = "";
+    public int updateAmigos(int id_a, int id, String alias) {
+        int id_u2 = 0;
         ResultSet rs;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT alias1 from amigos WHERE id_a = " + id_a);
+            PreparedStatement stmt = con.prepareStatement("SELECT * from amigos WHERE id_a = " + id_a);
             rs = stmt.executeQuery();
 
             while(rs.next()) {
-                aliasActual = rs.getString("alias1");
+                id_u2 = rs.getInt("id_u2");
             }
 
-            if (aliasActual.equals(alias))
-                stmt = con.prepareStatement("UPDATE amigos SET alias1 = " + alias + "WHERE id_a = " + id_a);
+            if (id == id_u2)
+                stmt = con.prepareStatement("UPDATE amigos SET alias1 = '" + alias + "' WHERE id_a = " + id_a);
             else
-                stmt = con.prepareStatement("UPDATE amigos SET alias2 = " + alias + "WHERE id_a = " + id_a);
+                stmt = con.prepareStatement("UPDATE amigos SET alias2 = '" + alias + "' WHERE id_a = " + id_a);
 
             return stmt.executeUpdate();
         } catch (SQLException ex) {
