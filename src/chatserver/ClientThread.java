@@ -30,6 +30,13 @@ public class ClientThread extends Thread {
     private ReentrantLock lock;
     private int maxClientsCount;
     private BaseDeDatos BD;
+    
+    /**
+     * Crea un nuevo cliente, recibe el socket, la base de datos, y el resto de threads para su manejo
+     * @param clientSocket
+     * @param BD
+     * @param threads 
+     */
     public ClientThread(Socket clientSocket, BaseDeDatos BD, ClientThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
@@ -43,6 +50,13 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * El thread corre aquí, primero se inicializa lo necesario para el cliente
+     * Y después se pone a escuchar esperando peticiones del cliente, las cuales pueden ser
+     * mensajes de amigos, grupos y no amigos; solicitudes de amistad o de unirse a un grupo; aceptar
+     * o rechazar las mismas solicitudes; poner un alias; crear un nuevo grupo; eliminar a una
+     * persona de un grupo o eliminar un grupo entero;
+     */
     @Override
     public void run(){
         user = new Usuario();
@@ -268,6 +282,12 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Inicializa el cliente mandando los valores predefinidos que ya debe de tener
+     * que son su lista de amigos y sus mensajes; grupos y sus mensajes; las solicitudes
+     * de amistad y de grupos que tenga guardadas, y por último la lista de los usuarios
+     * que están offline y online
+     */
     void init(){
         lock.lock();
         final ArrayList<Usuario> online=new ArrayList<>();

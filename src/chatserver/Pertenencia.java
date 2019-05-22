@@ -80,6 +80,9 @@ public class Pertenencia
         this.grupo = grupo;
     }
     
+    /**
+     * Constructor que inicializa los valores en 0 y vacío
+     */
     public Pertenencia()
     {
         id_p = 0;
@@ -88,6 +91,14 @@ public class Pertenencia
         grupo = 0;
     }
     
+    /**
+     * Constructor que recibe la id, el estado,
+     * el usuario y el grupo al que pertenece
+     * @param id_p
+     * @param estado
+     * @param usuario
+     * @param grupo 
+     */
     public Pertenencia(int id_p, String estado, int usuario, int grupo)
     {
         this.id_p = id_p;

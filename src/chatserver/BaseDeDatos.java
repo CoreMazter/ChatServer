@@ -22,6 +22,11 @@ public class BaseDeDatos
 {
     private Connection con;
     public ReentrantLock lock;
+    
+    /**
+     * Construtctor que inicializa la conexión a la BD de MySQL utilizando la librería correspondiente 
+     * e inicializa el lock utilizado para manejar la concurrencia
+     */
     public BaseDeDatos()
     {
         try
@@ -70,6 +75,11 @@ public class BaseDeDatos
         return usuario;
     }
     
+    /**
+     * Selecciona un usuario en específico utilizando su id como identificador
+     * @param id
+     * @return 
+     */
     public Usuario selectUserById(int id)
     {
         lock.lock();
@@ -716,6 +726,11 @@ public class BaseDeDatos
     Grupo       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+    /**
+     * Crea un nuevo grupo y recibe el nombre que se le va a colocar
+     * @param nombre
+     * @return 
+     */
     public int insertGrupo(String nombre){
         lock.lock();
          Grupo grupo = new Grupo();
@@ -745,6 +760,11 @@ public class BaseDeDatos
          return 0;
     }
 
+    /**
+     * Selecciona un grupo por su id
+     * @param id_g
+     * @return 
+     */
     public Grupo selectGrupo(int id_g){
         lock.lock();
         Grupo grupo = new Grupo();
@@ -767,6 +787,11 @@ public class BaseDeDatos
         return null;
     }
 
+    /**
+     * Selecciona todos los grupos en los que ha sido aceptado un usuario
+     * @param usuario
+     * @return 
+     */
     public ArrayList<Grupo> selectAllGrupoAceptado(int usuario) {
         lock.lock();
         ArrayList<Grupo> result = new ArrayList();
@@ -791,6 +816,11 @@ public class BaseDeDatos
         return null;
     }
 
+    /**
+     * Selecciona todos los grupos a los que ha sido invitado un usuario
+     * @param usuario
+     * @return 
+     */
     public ArrayList<Grupo> selectAllGrupoInvitado(int usuario) {
         lock.lock();
         ArrayList<Grupo> result = new ArrayList();
@@ -818,6 +848,12 @@ public class BaseDeDatos
         return null;
     }
 
+    /**
+     * Modifica el nombre del grupo que se escoja por la id
+     * @param id_g
+     * @param nombre
+     * @return 
+     */
     public int updateGrupo(int id_g, String nombre) {
         lock.lock();
         try {
@@ -832,6 +868,11 @@ public class BaseDeDatos
         return 0;
     }
 
+    /**
+     * Borra por completo un grupo
+     * @param id_g
+     * @return 
+     */
     public int deleteGrupo(int id_g) {
         lock.lock();
         try {
